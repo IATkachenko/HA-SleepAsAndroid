@@ -1,0 +1,24 @@
+{
+  "title": "Sleep As Android integration",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration for Sleep As Android",
+        "data": {
+          "name": "Name for sensor and events ",
+          "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
+          "qos": "Quality of service for MQTT"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "name": "Name for sensor and events ",
+        "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
+        "qos": "Quality of service for MQTT"
+      }
+    }
+  }
+}
