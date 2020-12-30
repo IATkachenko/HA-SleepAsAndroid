@@ -27,13 +27,18 @@ You will need:
  * click "Install". Home assistant restart may be required;
  
 ### Configuration
- * Name: name of sensor and prefix for events
+ * Name: name of device/sensor and prefix for events
  * Topic: same as topic in Sleep As Android configuration
  * QOS: quality of service for MQTT 
  
 ## Usage
 `<name>` is integration name in lower case without spaces from settings dialog.
-List of vents is avaliable at [Sleep As Android documentation page](https://docs.sleep.urbandroid.org/services/automation.html#events)
+List of vents is available at [Sleep As Android documentation page](https://docs.sleep.urbandroid.org/services/automation.html#events)
+
+### on device event (recommended)
+ 1. select "Device" in automatization trigger and use SleepAsAndroid device;
+ 1. select trigger from list.
+ 
 ### on sensor state change
 State of sensor `sensor.<name>` will have last event name, that published from application.
 ### on event

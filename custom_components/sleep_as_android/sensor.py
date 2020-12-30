@@ -10,6 +10,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.components.mqtt import subscription
 from homeassistant.const import STATE_UNKNOWN
+from homeassistant.helpers import device_registry as dr
+
+from .const import DOMAIN
+from .device_trigger import TRIGGERS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,11 +34,15 @@ class SleepAsAndroidSensor(Entity):
         self._config = config_entry.data
 
         self._state: str = STATE_UNKNOWN
+        self._device_id: str = "unknown"
         self._sub_state = None  # subscription state
 
     async def async_added_to_hass(self):
-        """Subscribe to MQTT events."""
         await super().async_added_to_hass()
+        device_registry = await dr.async_get_registry(self._hass)
+        device = device_registry.async_get_device(identifiers=self.device_info['identifiers'], connections=set())
+        _LOGGER.debug("My device id is %s", device.id)
+        self._device_id = device.id
         await self._subscribe_topics()
 
     async def async_will_remove_from_hass(self):
@@ -59,6 +67,18 @@ class SleepAsAndroidSensor(Entity):
                 payload = {"event": new_state}
                 _LOGGER.debug("Firing '%s' with payload: '%s'", self.name, payload)
                 self.hass.bus.fire(self.name, payload)
+                if new_state in TRIGGERS:
+                    self.hass.bus.async_fire(
+                        DOMAIN + "_event",
+                        {
+                            "device_id": self.device_id,
+                            "type": new_state
+                        }
+                    )
+                else:
+                    _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
+                                    "trigger!")
+
                 self._state = new_state
                 self.async_write_ha_state()
 
@@ -95,3 +115,13 @@ class SleepAsAndroidSensor(Entity):
     @property
     def available(self) -> bool:
         return self.state != STATE_UNKNOWN
+
+    @property
+    def device_id(self) -> str:
+        return self._device_id
+
+    @property
+    def device_info(self):
+        _LOGGER.debug("My identifiers is %s", {(DOMAIN, self.unique_id)})
+        info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid", "type": None}
+        return info
