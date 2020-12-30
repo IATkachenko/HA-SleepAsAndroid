@@ -1,3 +1,5 @@
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+
 # Sleep As Android custom integration
 
 This integration will allow you to get events from your [SleepAsAndroid](https://sleep.urbandroid.org) application as sensor state and events in Home assistant.
