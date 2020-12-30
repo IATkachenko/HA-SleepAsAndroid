@@ -1,0 +1,48 @@
+# Make new release based on conventional commits
+name: Create release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  changes:
+    name: "Create changelog and tag"
+    runs-on: ubuntu-latest
+    outputs:
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
+      tag: ${{ steps.changelog.outputs.tag }}
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      id: checkout
+
+    - name: Conventional Changelog Action
+      id: changelog
+      uses: TriPSs/conventional-changelog-action@v3
+      with:
+        github-token: ${{ secrets.github_token }}
+        output-file: "false"
+        skip-version-file:   "true"
+        skip-commit: "true"
+
+  release:
+    name: "Create release"
+    needs: changes
+    if: ${{ needs.changes.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+
+    steps:      
+    - name: Create Release
+      id: release
+      uses: actions/create-release@v1      
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+      with:
+        tag_name: ${{ needs.changes.outputs.tag }}
+        release_name: ${{ needs.changes.outputs.tag }}
+        body: ${{ needs.changes.outputs.clean_changelog }}
+ 
