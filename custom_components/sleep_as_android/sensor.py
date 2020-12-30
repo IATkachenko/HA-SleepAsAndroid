@@ -91,3 +91,7 @@ class SleepAsAndroidSensor(Entity):
     def icon(self):
         """Return the icon."""
         return "mdi:sleep"
+
+    @property
+    def available(self) -> bool:
+        return self.state != STATE_UNKNOWN

@@ -6,5 +6,5 @@
   "dependencies": ["mqtt"],
   "codeowners": ["@IATkachenko"],
   "config_flow": true,
-  "quality_scale": "No score"
+  "quality_scale": "silver"
 }
