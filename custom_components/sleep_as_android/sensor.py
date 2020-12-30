@@ -24,7 +24,7 @@ class SleepAsAndroidSensor(Entity):
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         self._hass: HomeAssistant = hass
         self._entity_id: ConfigEntry.entry_id = config_entry.entry_id
-        self._topic = config_entry.data['topic']
+        self._topic: str = config_entry.data['topic']
         self._qos = config_entry.data['qos']
         self._name = config_entry.data['name']
         self._config = config_entry.data
@@ -85,7 +85,7 @@ class SleepAsAndroidSensor(Entity):
     @property
     def unique_id(self) -> str:
         """Return a unique ID."""
-        return self.name
+        return self.name + "_" + self._topic.replace('/', '_')
 
     @property
     def icon(self):
