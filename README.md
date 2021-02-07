@@ -28,7 +28,7 @@ You will need:
  
 ### Configuration
  * Name: name of device/sensor and prefix for events
- * Topic: same as topic in Sleep As Android configuration
+ * Root Topic: MQTT-topic where Sleep as Android will create subtopick with events. Every subtopic will be unique device in home assistant.
  * QOS: quality of service for MQTT 
  
 ## Usage
