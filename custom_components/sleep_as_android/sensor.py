@@ -157,7 +157,7 @@ class SleepAsAndroidSensor(Entity):
     @property
     def unique_id(self) -> str:
         """Return a unique ID."""
-        return self.name + "_" + self._topic.replace('/', '_')
+        return self._instance.name + '_' + self._topic.replace('/', '_')
 
     @property
     def icon(self):
@@ -175,5 +175,6 @@ class SleepAsAndroidSensor(Entity):
     @property
     def device_info(self):
         _LOGGER.debug("My identifiers is %s", {(DOMAIN, self.unique_id)})
-        info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid", "type": None}
+        info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid",
+                "type": None}
         return info
