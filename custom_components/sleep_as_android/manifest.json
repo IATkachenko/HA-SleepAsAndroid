@@ -7,5 +7,6 @@
   "codeowners": ["@IATkachenko"],
   "config_flow": true,
   "quality_scale": "silver",
-  "requirements": []
+  "requirements": [],
+  "version": "1.2.0"
 }
