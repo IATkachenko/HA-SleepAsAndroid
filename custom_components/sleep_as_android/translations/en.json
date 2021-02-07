@@ -7,6 +7,7 @@
         "data": {
           "name": "Name for sensor and events ",
           "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
+          "root_topic": "Topic at MQTT-server with Sleep As Android subtopics. All subtopics will be created as independent devices. Must be consistent with application settings",
           "qos": "Quality of service for MQTT"
         }
       }
@@ -19,6 +20,7 @@
         "data": {
           "name": "Name for sensor and events ",
           "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
+          "root_topic": "Topic at MQTT-server with Sleep As Android subtopics. All subtopics will be created as independent devices. Must be consistent with application settings",
           "qos": "Quality of service for MQTT"
         }
       }
