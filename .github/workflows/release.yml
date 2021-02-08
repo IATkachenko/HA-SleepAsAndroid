@@ -29,6 +29,29 @@ jobs:
         skip-version-file:   "true"
         skip-commit: "true"
 
+  version:
+    name: "Update version"
+    needs: changes
+    if: ${{ needs.changes.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update version file
+        id: update
+        env:
+          NEW_VERSION: ${{ needs.changes.outputs.tag }}
+        run: sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" custom_components/sleep_as_android/manifest.json.tpl > custom_components/sleep_as_android/manifest.json
+
+      - name: setup git config
+        run: |
+          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Commit
+        id: commit
+        run: |
+          git commit -m "ci: version update" custom_components/sleep_as_android/manifest.json
+          git push origin master
+
   release:
     name: "Create release"
     needs: changes
