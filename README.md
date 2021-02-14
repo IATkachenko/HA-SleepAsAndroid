@@ -27,11 +27,27 @@ You will need:
  * click "add" button;
  * find "Sleep As Andorid" integration;
  * click "Install". Home assistant restart may be required;
- 
-### Configuration
- * Name: name of device/sensor and prefix for events
- * Root Topic: MQTT-topic where Sleep as Android will create subtopick with events. Every subtopic will be unique device in home assistant.
+
+### Configuration 
+#### Component configuration
+ * Name: name of device/sensor and prefix for events. Will be used as default prefix for devices and events.
+ * Root Topic: MQTT-topic where Sleep as Android will create subtopic with events. Every subtopic will be unique device in home assistant.
  * QOS: quality of service for MQTT 
+
+#### Application configuration
+To configure SleepAsAndroid for working with this integration:
+ 1. Go to application settings
+ 1. Find **Services** in integration section
+ 1. Go to **Automation**
+ 1. Find **MQTT** section
+ 
+ Then:
+ * Enable it
+ * URL is a URL for your MQTT server. It should look like `tpc:///mqtt_user:mqtt_password@mqtt_host:mqtt_port`
+ * Topic is a topic name where the application will publish events. MUST be a subtopic in **Root topic** from integration settings. Topic name will be used as a suffix for the default device name in HomeAssistant
+ * Client ID is any ID. It is not used by integration and is not published to MQTT (now).
+ 
+More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/application-configuration).
  
 ## Usage
 `<name>` is integration name in lower case without spaces from settings dialog.
