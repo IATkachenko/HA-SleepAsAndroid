@@ -44,8 +44,11 @@ To configure SleepAsAndroid for working with this integration:
  Then:
  * Enable it
  * URL is a URL for your MQTT server. It should look like `tpc:///mqtt_user:mqtt_password@mqtt_host:mqtt_port`
- * Topic is a topic name where the application will publish events. MUST be a subtopic in **Root topic** from integration settings. Topic name will be used as a suffix for the default device name in HomeAssistant
+ * Topic is a topic name where the application will publish events. MUST be a subtopic in **Root topic** from integration settings. Topic name will be used as a suffix for the default device name in HomeAssistant.
+   * For example, if your root topic is `SleepAsAndroid`, a valid subtopic would be `SleepAsAndroid/username`.
  * Client ID is any ID. It is not used by integration and is not published to MQTT (now).
+
+![SleepAsAndroid configuration](./docs/images/SleepAsAndroidSetup.png)
  
 More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/application-configuration).
  
