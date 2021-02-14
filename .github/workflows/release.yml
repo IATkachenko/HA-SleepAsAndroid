@@ -76,7 +76,7 @@ jobs:
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     steps:
       - name: post
-        uses: IATkachenko/patreon-post@v1.1.5
+        uses: IATkachenko/patreon-post@main
         with:
           login: ${{ secrets.PATREON_USER }}
           password: ${{ secrets.PATREON_PASSWORD }}
