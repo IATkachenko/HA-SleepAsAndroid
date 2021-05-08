@@ -31,11 +31,7 @@ def generate_id(instance: SleepAsAndroidInstance, name: str) -> str:
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the sensor entry"""
-    async def subscribe_root_topic(root_instance: SleepAsAndroidInstance):
-        """(Re)Subscribe to topics."""
-        _LOGGER.debug("Subscribing to root topic '%s'", root_instance.mqtt_topic)
-        sub_state = None
-
+    async def add_configured_entities():
         entity_registry = await er.async_get_registry(hass)
 
         entities = []
@@ -44,10 +40,17 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
         async_add_entities(entities)
 
+    async def subscribe_root_topic(root_instance: SleepAsAndroidInstance):
+        """(Re)Subscribe to topics."""
+        _LOGGER.debug("Subscribing to root topic '%s'", root_instance.mqtt_topic)
+        sub_state = None
+
         @callback
         # @log_messages(self.hass, self.entry_id)
         def message_received(msg):
             """Handle new MQTT messages."""
+
+            entity_registry = await er.async_get_registry(hass)
             _LOGGER.debug("Got message %s", msg)
             entity_id = root_instance.name + '_' + msg.topic.replace('/', '_')
             candidate_entity = entity_registry.async_get_entity_id('sensor', DOMAIN, entity_id)
@@ -73,6 +76,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             _LOGGER.debug("Subscribing to root topic is done!")
 
     instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
+    await add_configured_entities()
     await subscribe_root_topic(instance)
     return True
 
