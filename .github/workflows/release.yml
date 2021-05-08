@@ -67,7 +67,39 @@ jobs:
       with:
         tag_name: ${{ needs.changes.outputs.tag }}
         release_name: ${{ needs.changes.outputs.tag }}
-        body: ${{ needs.changes.outputs.clean_changelog }}
+        body: |
+          [![GitHub release (by tag)](https://img.shields.io/github/downloads/$GITHUB_REPOSITORY/${{ needs.changes.outputs.tag }}/total?style=plastic)]()
+          ${{ needs.changes.outputs.clean_changelog }}
+
+  add_archive_to_release:
+    name: "Add release archive"
+    needs: release
+    if: ${{ needs.changes.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check out repository"
+        uses: actions/checkout@v1
+
+      - name: "Set variables"
+        working-directory: ./custom_components
+        run: |
+          echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
+          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+
+      - name: "Zip component dir"
+        working-directory: ./custom_components/${{ env.package }}
+        run: |
+          zip ${{ env.archive }} -r ./
+
+      - name: "Upload zip to release"
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.github_token }}
+          file: ${{ env.basedir }}/${{ env.archive }}
+          asset_name: ${{ env.archive }}
+          tag: ${{ needs.changes.outputs.tag }}
+          overwrite: true
  
   create_post:
     runs-on: ubuntu-latest
