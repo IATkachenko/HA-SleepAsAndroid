@@ -26,24 +26,11 @@ class SleepAsAndroidInstance:
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         self.hass = hass
         self._config_entry = config_entry
-        self._topic = None
+
         try:
             self._name: str = self.get_from_config('name')
         except KeyError:
             self._name = 'SleepAsAndroid'
-
-        try:
-            self._topic = self.get_from_config('root_topic')
-        except KeyError:
-            try:
-                self.get_from_config('topic')
-                _LOGGER.warning("You are using deprecated configuration with one topic per integration. \n"
-                                "Please remove additional integration and set root topic for all devices instead.")
-                self._topic = '/'.join(self._config_entry.data['topic'].split('/')[:-1])
-            except KeyError:
-                _LOGGER.critical("Could not find topic or root_topic in configuration. Will use %s instead",
-                                 self._topic)
-                self._topic = 'SleepAsAndroid'
 
         self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
 
@@ -60,5 +47,20 @@ class SleepAsAndroidInstance:
         return self._name
 
     @property
-    def root_topic(self) -> str:
-        return self._topic
+    def mqtt_topic(self) -> str:
+        _topic = None
+
+        try:
+            _topic = self.get_from_config('root_topic')
+        except KeyError:
+            try:
+                _topic = self.get_from_config('topic')
+                _LOGGER.warning("You are using deprecated configuration with one topic per integration. \n"
+                                "Please remove additional integration and set root topic for all devices instead.")
+                _topic = '/'.join(_topic.split('/')[:-1])
+            except KeyError:
+                _topic = 'SleepAsAndroid'
+                _LOGGER.critical("Could not find topic or root_topic in configuration. Will use %s instead",
+                                 _topic)
+
+        return _topic + '/+'

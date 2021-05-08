@@ -33,8 +33,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """Set up the sensor entry"""
     async def subscribe_root_topic(root_instance: SleepAsAndroidInstance):
         """(Re)Subscribe to topics."""
-        root_topic = root_instance.root_topic
-        _LOGGER.debug("Subscribing to root topic '%s'", root_topic)
+        _LOGGER.debug("Subscribing to root topic '%s'", root_instance.mqtt_topic)
         sub_state = None
 
         entity_registry = await er.async_get_registry(hass)
@@ -64,7 +63,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             sub_state,
             {
                 "state_topic": {
-                    "topic": root_topic + '/+',
+                    "topic": root_instance.mqtt_topic,
                     "msg_callback": message_received,
                     "qos": config_entry.data['qos']
                 }
