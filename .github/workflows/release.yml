@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Check out repository"
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Update version file
         id: update
@@ -48,7 +48,7 @@ jobs:
         run: |
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
           git config user.name "GitHub Actions Bot"
-          git config user.email "<>"
+          git config user.email "<github-actions@no_spam.please>"
       - name: Commit
         id: commit
         run: |
