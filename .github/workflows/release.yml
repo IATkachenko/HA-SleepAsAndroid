@@ -35,15 +35,14 @@ jobs:
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
     steps:
+      - name: "Check out repository"
+        uses: actions/checkout@v1
+
       - name: Update version file
         id: update
         env:
           NEW_VERSION: ${{ needs.changes.outputs.tag }}
-        run: |
-          pwd
-          ls
-          sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" ./custom_components/sleep_as_android/manifest.json.tpl
-          sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
+        run: sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
 
       - name: setup git config
         run: |
