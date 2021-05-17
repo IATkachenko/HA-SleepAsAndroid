@@ -128,7 +128,7 @@ class SleepAsAndroidSensor(Entity):
                     self.hass.bus.async_fire(DOMAIN + "_event", {"device_id": self.device_id, "type": new_state})
                 else:
                     _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
-                                    "trigger!")
+                                    "trigger!", new_state)
         except KeyError:
             _LOGGER.warning("Got unexpected payload: '%s'", msg.payload)
         except json.decoder.JSONDecodeError:
