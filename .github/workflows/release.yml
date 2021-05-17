@@ -53,7 +53,7 @@ jobs:
         id: commit
         run: |
           git commit -m "ci: version update" custom_components/sleep_as_android/manifest.json
-          git push origin master
+          git push origin main
 
   release:
     name: "Create release"
