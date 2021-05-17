@@ -38,17 +38,17 @@ jobs:
       - name: "Check out repository"
         uses: actions/checkout@v2
 
-      - name: Update version file
-        id: update
-        env:
-          NEW_VERSION: ${{ needs.changes.outputs.tag }}
-        run: sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
-
-      - name: setup git config
+      - name: "Prepare"
         run: |
+          echo "NEW_VERSION=${{ needs.changes.outputs.tag }}" | sed -e 's/=v/=/' >> $GITHUB_ENV
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions@no_spam.please"
+
+      - name: Update version file
+        id: update
+        run: sed -e "s/%%%VERSION%%%/${{ env.NEW_VERSION }}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
+
       - name: Commit
         id: commit
         run: |
