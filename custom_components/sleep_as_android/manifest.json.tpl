@@ -9,5 +9,5 @@
   "quality_scale": "silver",
   "requirements": [],
   "version": "%%%VERSION%%%",
-  "iot_class": "local_pushing"
+  "iot_class": "local_push"
 }
