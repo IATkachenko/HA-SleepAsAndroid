@@ -58,7 +58,7 @@ jobs:
 
   release:
     name: "Create release"
-    needs: changes
+    needs: [ changes, version ]
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
 
