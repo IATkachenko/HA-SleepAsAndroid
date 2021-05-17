@@ -87,13 +87,13 @@ jobs:
         working-directory: ./custom_components
         run: |
           echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
-          
+
       - name: "Set variables"
         working-directory: ./custom_components
         run: |
-        echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
-        echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
-        env
+          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+          env
 
       - name: "Zip component dir"
         working-directory: ./custom_components/${{ env.package }}
