@@ -39,7 +39,10 @@ jobs:
         id: update
         env:
           NEW_VERSION: ${{ needs.changes.outputs.tag }}
-        run: sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" custom_components/sleep_as_android/manifest.json.tpl > custom_components/sleep_as_android/manifest.json
+        run: |
+          pwd
+          sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" custom_components/sleep_as_android/manifest.json.tpl
+          sed -e "s/%%%VERSION%%%/${NEW_VERSION#v}/" custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
 
       - name: setup git config
         run: |
