@@ -76,7 +76,7 @@ jobs:
 
   add_archive_to_release:
     name: "Add release archive"
-    needs: release
+    needs: [ 'changes', 'release' ]
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
     steps:
