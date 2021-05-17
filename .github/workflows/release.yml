@@ -83,12 +83,17 @@ jobs:
       - name: "Check out repository"
         uses: actions/checkout@v1
 
-      - name: "Set variables"
+      - name: "Set package name"
         working-directory: ./custom_components
         run: |
           echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
-          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
-          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+          
+      - name: "Set variables"
+        working-directory: ./custom_components
+        run: |
+        echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+        echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+        env
 
       - name: "Zip component dir"
         working-directory: ./custom_components/${{ env.package }}
