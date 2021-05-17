@@ -8,5 +8,6 @@
   "config_flow": true,
   "quality_scale": "silver",
   "requirements": [],
-  "version": "%%%VERSION%%%"
+  "version": "%%%VERSION%%%",
+  "iot_class": "local_pushing"
 }
