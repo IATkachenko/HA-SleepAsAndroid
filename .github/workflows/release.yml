@@ -72,7 +72,7 @@ jobs:
         tag_name: ${{ needs.changes.outputs.tag }}
         release_name: ${{ needs.changes.outputs.tag }}
         body: |
-          [![GitHub release (by tag)](https://img.shields.io/github/downloads/$GITHUB_REPOSITORY/${{ needs.changes.outputs.tag }}/total?style=plastic)]()
+          [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)]()
           ${{ needs.changes.outputs.clean_changelog }}
 
   add_archive_to_release:
