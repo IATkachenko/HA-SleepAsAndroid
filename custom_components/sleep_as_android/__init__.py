@@ -1,9 +1,12 @@
 """Sleep As Android integration"""
 
 import logging
+from typing import List
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from .const import DOMAIN
+from .sensor import SleepAsAndroidSensor
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +29,7 @@ class SleepAsAndroidInstance:
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         self.hass = hass
         self._config_entry = config_entry
+        self.sensors: List[SleepAsAndroidSensor] = []
 
         try:
             self._name: str = self.get_from_config('name')

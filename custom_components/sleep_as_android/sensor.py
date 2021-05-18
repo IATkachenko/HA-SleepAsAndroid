@@ -31,14 +31,19 @@ def generate_id(instance: SleepAsAndroidInstance, name: str) -> str:
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities):
     """Set up the sensor entry"""
+    instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
+
     async def add_configured_entities():
         entity_registry = await er.async_get_registry(hass)
 
-        entities = []
+        # todo
+        # instance.senor should be a dict. Keys -- topics.
+        # if topic not match template -- new key
+        # if match just add to list
         for entity in er.async_entries_for_config_entry(entity_registry, config_entry.entry_id):
-            entities.append(SleepAsAndroidSensor(hass, config_entry, "/".join(entity.unique_id.split('_')[1:])))
+            instance.sensors.append(SleepAsAndroidSensor(hass, config_entry, "/".join(entity.unique_id.split('_')[1:])))
 
-        async_add_entities(entities)
+        async_add_entities(instance.sensors.append)
 
     async def subscribe_root_topic(root_instance: SleepAsAndroidInstance):
         """(Re)Subscribe to topics."""
@@ -49,6 +54,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         # @log_messages(self.hass, self.entry_id)
         def message_received(msg):
             """Handle new MQTT messages."""
+
+            # todo
+            # create entity if needed
+            # call message_received of entity
 
             entity_registry = await er.async_get_registry(hass)
             _LOGGER.debug("Got message %s", msg)
@@ -74,8 +83,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         )
         if sub_state is not None:
             _LOGGER.debug("Subscribing to root topic is done!")
-
-    instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
+    # todo
+    # instance should subscribe to topics and call message_received of sensor
     await add_configured_entities()
     await subscribe_root_topic(instance)
     return True
@@ -102,21 +111,11 @@ class SleepAsAndroidSensor(Entity):
         device = device_registry.async_get_device(identifiers=self.device_info['identifiers'], connections=set())
         _LOGGER.debug("My device id is %s", device.id)
         self._device_id = device.id
-        await self._subscribe_topics()
         self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self):
         self._sub_state = await subscription.async_unsubscribe_topics(self.hass, self._sub_state)
 
-    async def _subscribe_topics(self):
-        """(Re)Subscribe to topics."""
-        _LOGGER.debug("Sensor %s subscribing to topic %s", self.name, self._topic)
-
-        self._sub_state = await subscription.async_subscribe_topics(self.hass, self._sub_state, {
-            "state_topic": {"topic": self._topic, "msg_callback": self.message_received, "qos": self._qos, }})
-        _LOGGER.debug("Sensor %s subscribing is done!", self.name)
-
-    @callback
     def message_received(self, msg, first: bool = False):
         """Handle new MQTT messages."""
         new_state = STATE_UNKNOWN
