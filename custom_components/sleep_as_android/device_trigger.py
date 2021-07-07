@@ -1,6 +1,6 @@
 import logging
 import voluptuous as vol
-from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA
+from homeassistant.components.device_automation import DEVICE_TRIGGER_BASE_SCHEMA
 from homeassistant.const import (CONF_ENTITY_ID, CONF_TYPE, CONF_PLATFORM, CONF_DOMAIN, CONF_DEVICE_ID, )
 from homeassistant.components.homeassistant.triggers import event as event_trigger
 from homeassistant.core import HomeAssistant
@@ -38,7 +38,7 @@ TRIGGERS = [
     "sound_event_laugh"
 ]
 
-TRIGGER_SCHEMA = TRIGGER_BASE_SCHEMA.extend(
+TRIGGER_SCHEMA = DEVICE_TRIGGER_BASE_SCHEMA.extend(
     {
         vol.Required(CONF_TYPE): vol.In(TRIGGERS),
     }
