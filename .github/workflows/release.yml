@@ -108,19 +108,3 @@ jobs:
           asset_name: ${{ env.archive }}
           tag: ${{ needs.changes.outputs.tag }}
           overwrite: true
- 
-  create_post:
-    runs-on: ubuntu-latest
-    needs: changes
-    name: patreon post
-    if: ${{ needs.changes.outputs.skipped == 'false' }}
-    steps:
-      - name: post
-        uses: IATkachenko/patreon-post@main
-        with:
-          login: ${{ secrets.PATREON_USER }}
-          password: ${{ secrets.PATREON_PASSWORD }}
-          body: ${{ needs.changes.outputs.clean_changelog }}
-        env:
-          HTTPS_PROXY: ${{ secrets.HTTPS_PROXY }}
-          PATREON_DEVICE_ID: ${{ secrets.PATREON_DEVICE_ID }}
