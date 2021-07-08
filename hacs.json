@@ -1,4 +1,6 @@
  {
   "name": "Sleep As Android",
-  "render_readme": true
+  "render_readme": true,
+  "zip_release": true,
+  "filename": "sleep_as_android.zip"
 }
