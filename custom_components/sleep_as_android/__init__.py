@@ -4,8 +4,11 @@ import logging
 from typing import List
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from .const import DOMAIN
+from homeassistant.helpers import entity_registry as er
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.components.mqtt import subscription
+
+from .const import DOMAIN, DEVICE_MACRO
 from .sensor import SleepAsAndroidSensor
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,22 +24,74 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
 
-    hass.data[DOMAIN][config_entry.entry_id] = SleepAsAndroidInstance(hass, config_entry)
+    registry = await er.async_get_registry(hass)
+    hass.data[DOMAIN][config_entry.entry_id] = SleepAsAndroidInstance(hass, config_entry, registry)
     return True
 
 
 class SleepAsAndroidInstance:
-    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, registry: er):
         self.hass = hass
         self._config_entry = config_entry
         self.sensors: List[SleepAsAndroidSensor] = []
+        self._entity_registry: er = registry
+        self._subscription_state = None
 
         try:
             self._name: str = self.get_from_config('name')
         except KeyError:
             self._name = 'SleepAsAndroid'
 
+        # will call async_setup_entry from sensor.py
         self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
+
+    @property
+    def device_position_in_topic(self) -> int:
+        """ Position of DEVICE_MACRO in configured MQTT topic """
+        result: int = 0
+
+        for p in self.configured_topic.split('/'):
+            if p == DEVICE_MACRO:
+                break
+            else:
+                result += 1
+
+        return result
+
+    @staticmethod
+    def device_name_from_topic_and_position(topic: str, position: int) -> str:
+        """
+        Get device name from full topic.
+        :param topic: full topic from MQTT message
+        :param position: position of device template
+
+        :returns: device name
+        """
+        result: str = "unknown_device"
+        s = topic.split('/')
+        try:
+            result = s[position]
+        except KeyError:
+            pass
+
+        return result
+
+    def device_name_from_topic(self, topic: str) -> str:
+        """Get device name from topic
+
+        :param topic: topic sting from MQTT message
+        :returns: device name
+        """
+        return self.device_name_from_topic_and_position(topic, self.device_position_in_topic)
+
+    @property
+    def topic_template(self) -> str:
+        """
+        Converts topic with {device} to MQTT topic for subscribing
+        """
+        splitted = self.configured_topic.split('/')
+        splitted[self.device_position_in_topic] = '+'
+        return '/'.join(splitted)
 
     def get_from_config(self, name: str) -> str:
         try:
@@ -48,23 +103,76 @@ class SleepAsAndroidInstance:
 
     @property
     def name(self) -> str:
+        """Name of the integration in Home Assistant."""
         return self._name
 
     @property
-    def mqtt_topic(self) -> str:
+    def configured_topic(self) -> str:
+        """MQTT topic from integration configuration."""
         _topic = None
 
         try:
-            _topic = self.get_from_config('root_topic')
+            _topic = self.get_from_config('topic_template')
         except KeyError:
-            try:
-                _topic = self.get_from_config('topic')
-                _LOGGER.warning("You are using deprecated configuration with one topic per integration. \n"
-                                "Please remove additional integration and set root topic for all devices instead.")
-                _topic = '/'.join(_topic.split('/')[:-1])
-            except KeyError:
-                _topic = 'SleepAsAndroid'
-                _LOGGER.critical("Could not find topic or root_topic in configuration. Will use %s instead",
-                                 _topic)
+            _topic = 'SleepAsAndroid/' + DEVICE_MACRO
+            _LOGGER.warning("Could not find topic_template in configuration. Will use %s instead", _topic)
 
-        return _topic + '/+'
+        return _topic
+
+    def create_entity_id(self, device_name: str) -> str:
+        """
+        Generates entity_id based on instance name and device name.
+        Used to identify individual sensors.
+
+        :param device_name: name of device
+        :returns: id that may be used for searching sensor by entity_id in entity_registry
+        """
+        return self.name + "_" + device_name
+
+    def device_name_from_entity_id(self, entity_id: str) -> str:
+        """
+        Extract device name from entity_id
+
+        :param entity_id: entity id that was generated by self.create_entity_id
+        :returns: pure device name
+        """
+        return entity_id.replace(self.name + "_", "", 1)
+
+    @property
+    def entity_registry(self) -> er:
+        return self._entity_registry
+
+    async def subscribe_root_topic(self, async_add_entities):
+        """(Re)Subscribe to topics."""
+        _LOGGER.debug("Subscribing to '%s' (generated from '%s')", self.topic_template, self.configured_topic)
+        self._subscription_state = None
+
+        @callback
+        def message_received(msg):
+            """Handle new MQTT messages."""
+
+            _LOGGER.debug("Got message %s", msg)
+            device_name = self.device_name_from_topic(msg.topic)
+            entity_id = self.create_entity_id(device_name)
+
+            candidate_entity = self.entity_registry.async_get_entity_id('sensor', DOMAIN, entity_id)
+
+            if candidate_entity is None:
+                _LOGGER.info("New device! Let's create sensor for %s (%s)", device_name, msg.topic)
+                new_entity = SleepAsAndroidSensor(self.hass, self._config_entry, device_name)
+                new_entity.process_message(msg)
+                async_add_entities([new_entity])
+
+        self._subscription_state = await subscription.async_subscribe_topics(
+            self.hass,
+            self._subscription_state,
+            {
+                "state_topic": {
+                    "topic": self.topic_template,
+                    "msg_callback": message_received,
+                    "qos": self._config_entry.data['qos']
+                }
+            }
+        )
+        if self._subscription_state is not None:
+            _LOGGER.debug("Subscribing to root topic is done!")
