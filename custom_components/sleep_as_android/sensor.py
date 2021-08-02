@@ -39,7 +39,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         async_add_entities(sensors)
     instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
     await add_configured_entities()
+    _LOGGER.debug("async_setup_entry: adding configured entities is finished. Going to subscribe to root topic")
     await instance.subscribe_root_topic(async_add_entities)
+    _LOGGER.debug("async_setup_entry is finished")
     return True
 
 
