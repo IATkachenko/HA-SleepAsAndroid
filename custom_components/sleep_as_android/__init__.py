@@ -14,7 +14,7 @@ from .sensor import SleepAsAndroidSensor
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(hass: HomeAssistant, config_entry: ConfigEntry):
+async def async_setup(_hass: HomeAssistant, _config_entry: ConfigEntry):
     return True
 
 
