@@ -140,5 +140,5 @@ class SleepAsAndroidSensor(Entity):
     def device_info(self):
         _LOGGER.debug("My identifiers is %s", {(DOMAIN, self.unique_id)})
         info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid",
-                "type": None}
+                "type": None, "model": "MQTT"}
         return info
