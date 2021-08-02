@@ -156,14 +156,16 @@ class SleepAsAndroidInstance:
             _LOGGER.debug("Got message %s", msg)
             device_name = self.device_name_from_topic(msg.topic)
             entity_id = self.create_entity_id(device_name)
-
+            _LOGGER.debug(f"sensor entity_id is {entity_id}")
             candidate_entity = self.entity_registry.async_get_entity_id('sensor', DOMAIN, entity_id)
 
             if candidate_entity is None:
                 _LOGGER.info("New device! Let's create sensor for %s (%s)", device_name, msg.topic)
-                new_entity = SleepAsAndroidSensor(self.hass, self._config_entry, device_name)
-                new_entity.process_message(msg)
-                async_add_entities([new_entity])
+                candidate_entity = SleepAsAndroidSensor(self.hass, self._config_entry, device_name)
+
+                async_add_entities([candidate_entity])
+
+            candidate_entity.process_message(msg)
 
         self._subscription_state = await subscription.async_subscribe_topics(
             self.hass,
