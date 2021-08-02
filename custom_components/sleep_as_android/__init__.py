@@ -1,7 +1,7 @@
 """Sleep As Android integration"""
 
 import logging
-from typing import List
+from typing import Dict
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import entity_registry as er
@@ -33,7 +33,7 @@ class SleepAsAndroidInstance:
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, registry: er):
         self.hass = hass
         self._config_entry = config_entry
-        self.sensors: List[SleepAsAndroidSensor] = []
+        self.__sensors: Dict[str, SleepAsAndroidSensor] = {}
         self._entity_registry: er = registry
         self._subscription_state = None
 
@@ -157,15 +157,11 @@ class SleepAsAndroidInstance:
             device_name = self.device_name_from_topic(msg.topic)
             entity_id = self.create_entity_id(device_name)
             _LOGGER.debug(f"sensor entity_id is {entity_id}")
-            candidate_entity = self.entity_registry.async_get_entity_id('sensor', DOMAIN, entity_id)
 
-            if candidate_entity is None:
-                _LOGGER.info("New device! Let's create sensor for %s (%s)", device_name, msg.topic)
-                candidate_entity = SleepAsAndroidSensor(self.hass, self._config_entry, device_name)
-
-                async_add_entities([candidate_entity])
-
-            candidate_entity.process_message(msg)
+            (target_sensor, is_new) = self.get_sensor(device_name)
+            if is_new:
+                async_add_entities([target_sensor])
+            target_sensor.process_message(msg)
 
         self._subscription_state = await subscription.async_subscribe_topics(
             self.hass,
@@ -180,3 +176,18 @@ class SleepAsAndroidInstance:
         )
         if self._subscription_state is not None:
             _LOGGER.debug("Subscribing to root topic is done!")
+
+    def get_sensor(self, sensor_name: str) -> (SleepAsAndroidSensor, bool):
+        """
+        Get sensor by it's name. If we have no such key in __sensors -- create new sensor
+        :param sensor_name: name of sensor
+        :return: (sensor with name "sensor_name", it it a new sensor)
+
+        """
+        try:
+            return self.__sensors[sensor_name], False
+        except KeyError:
+            _LOGGER.info("New device! Let's create sensor for %%s", sensor_name)
+            new_sensor = SleepAsAndroidSensor(self.hass, self._config_entry, sensor_name)
+            self.__sensors[sensor_name] = new_sensor
+            return new_sensor, True

@@ -15,7 +15,7 @@ from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 from .device_trigger import TRIGGERS
 from .const import DOMAIN
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from . import SleepAsAndroidInstance
 
@@ -27,20 +27,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
     async def add_configured_entities():
         """Scan entity registry and add previously created entities to Home Assistant"""
-        # todo
-        # instance.senor should be a dict. Keys -- topics.
-        # if topic not match template -- new key
-        # if match just add to list
+
         entities = async_entries_for_config_entry(instance.entity_registry, config_entry.entry_id)
+        sensors: List[SleepAsAndroidSensor] = []
         for entity in entities:
-            instance.sensors.append(SleepAsAndroidSensor(
-                hass,
-                config_entry,
-                instance.device_name_from_entity_id(entity.unique_id)
-            ))
+            device_name = instance.device_name_from_entity_id(entity.unique_id)
+            _LOGGER.debug(f"add_configured_entities: creating sensor with name {device_name}")
+            (sensor, _) = instance.get_sensor(device_name)
+            sensors.append(sensor)
 
-        async_add_entities(instance.sensors)
-
+        async_add_entities(sensors)
     instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
     await add_configured_entities()
     await instance.subscribe_root_topic(async_add_entities)
@@ -56,6 +52,7 @@ class SleepAsAndroidSensor(Entity):
         self._name: str = name
         self._state: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
+        _LOGGER.debug(f"Creating sensor with name {name}")
 
     async def async_added_to_hass(self):
         """
