@@ -177,6 +177,8 @@ class SleepAsAndroidInstance:
         )
         if self._subscription_state is not None:
             _LOGGER.debug("Subscribing to root topic is done!")
+        else:
+            _LOGGER.critical(f"Could not subscribe to topic {self.topic_template}")
 
     def get_sensor(self, sensor_name: str) -> (SleepAsAndroidSensor, bool):
         """
