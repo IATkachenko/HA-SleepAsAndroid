@@ -10,11 +10,14 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 
 from .device_trigger import TRIGGERS
-
 from .const import DOMAIN
-from . import SleepAsAndroidInstance
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from . import SleepAsAndroidInstance
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,8 +31,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         # instance.senor should be a dict. Keys -- topics.
         # if topic not match template -- new key
         # if match just add to list
-        for entity in instance.entity_registry.async_entries_for_config_entry(
-                instance.entity_registry, config_entry.entry_id):
+        entities = async_entries_for_config_entry(instance.entity_registry, config_entry.entry_id)
+        for entity in entities:
             instance.sensors.append(SleepAsAndroidSensor(
                 hass,
                 config_entry,
@@ -50,7 +53,7 @@ class SleepAsAndroidSensor(Entity):
 
         self.hass: HomeAssistant = hass
 
-        self._name: str = self._instance.name + '_' + name
+        self._name: str = name
         self._state: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
 
