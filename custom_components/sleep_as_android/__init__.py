@@ -1,7 +1,7 @@
 """Sleep As Android integration"""
 
 import logging
-from typing import Dict
+from typing import Dict, Callable
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import entity_registry as er
@@ -145,7 +145,7 @@ class SleepAsAndroidInstance:
     def entity_registry(self) -> er:
         return self._entity_registry
 
-    async def subscribe_root_topic(self, async_add_entities):
+    async def subscribe_root_topic(self, async_add_entities: Callable):
         """(Re)Subscribe to topics."""
         _LOGGER.debug("Subscribing to '%s' (generated from '%s')", self.topic_template, self.configured_topic)
         self._subscription_state = None
