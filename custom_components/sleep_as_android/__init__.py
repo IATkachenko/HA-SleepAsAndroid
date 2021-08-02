@@ -44,6 +44,7 @@ class SleepAsAndroidInstance:
 
         # will call async_setup_entry from sensor.py
         self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
+        # ToDo prepare topic_template and other variables that should be defined one time.
 
     @property
     def device_position_in_topic(self) -> int:
