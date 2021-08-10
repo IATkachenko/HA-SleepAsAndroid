@@ -19,6 +19,7 @@ else:
                  "dropped.", homeassistant_version)
     from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA as HA_TRIGGER_BASE_SCHEMA
 
+# available at https://docs.sleep.urbandroid.org/services/automation.html#events
 TRIGGERS = [
     "sleep_tracking_started",
     "sleep_tracking_stopped",
@@ -32,6 +33,7 @@ TRIGGERS = [
     "alarm_skip_next",
     "rem",
     "smart_period",
+    "before_smart_period",
     "lullaby_start",
     "lullaby_stop",
     "lullaby_volume_down",
