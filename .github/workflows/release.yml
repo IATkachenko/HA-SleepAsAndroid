@@ -54,6 +54,7 @@ jobs:
         run: |
           git commit -m "ci: version update" custom_components/sleep_as_android/manifest.json
           git push origin main
+          git tag -f -a -m "v${{ env.NEW_VERSION }}" v${{ env.NEW_VERSION }} && git push -f --tags || true
 
   release:
     name: "Create release"
