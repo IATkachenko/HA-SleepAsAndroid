@@ -7,6 +7,7 @@ from homeassistant.config_entries import ConfigEntry, ConfigEntries
 from homeassistant.helpers import entity_registry as er
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.components.mqtt import subscription
+from homeassistant.exceptions import NoEntitySpecifiedError
 
 from .const import DOMAIN, DEVICE_MACRO
 from .sensor import SleepAsAndroidSensor
@@ -167,8 +168,12 @@ class SleepAsAndroidInstance:
 
             (target_sensor, is_new) = self.get_sensor(device_name)
             if is_new:
-                async_add_entities([target_sensor])
-            target_sensor.process_message(msg)
+                async_add_entities([target_sensor], True)
+            try:
+                target_sensor.process_message(msg)
+            except NoEntitySpecifiedError:
+                # ToDo:  async_write_ha_state() runs before async_add_entities, so entity have no entity_id yet
+                pass
 
         self._subscription_state = await subscription.async_subscribe_topics(
             self.hass,
