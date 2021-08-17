@@ -10,17 +10,18 @@ This integration will allow you to get events from your [SleepAsAndroid](https:/
 ## Installation & configuration
 ### Requirements
 You will need:  
-  * configured MQTT server in `configuration.yaml` like
+  * [Home Assistant with configured MQTT integration](https://www.home-assistant.io/integrations/mqtt/)
+    <br/>example of configuration.yaml:
     ```yaml
     mqtt:
       broker: mqtt.myserver
       port: 1883
-      username: ha_husr
+      username: ha_user
       discovery: true 
     ```
- * Sleep As android with MQTT support (currently beta version)
-    * go to Settings -> Services -> Automatization -> MQTT
-    * enable and configure MQTT
+  * [Sleep As android application](https://play.google.com/store/apps/details?id=com.urbandroid.sleep) 
+     * go to Settings -> Services -> Automatization -> MQTT
+     * enable and configure MQTT
 
 ### Installation
  * go to HACS->Integrations->three dots at upper-right conner->Custom repositories
@@ -32,7 +33,10 @@ You will need:
 ### Configuration 
 #### Component configuration
  * `Name`: name of the device/sensor and a prefix for the events. Will be used as a default prefix for devices and events.
- * `Root Topic`: MQTT topic where `Sleep as Android` will create subtopic for the event publishing. Every subtopic will be a unique device in `Home Assistant`.
+ * `Topic template`: template for MQTT topic where `Sleep as Android` will publish event. `%%%device%%%` may be used in template to point to device name position. Examples:
+   * **SleepAsAndroid/igor** - no `%%%device%%%` in template just one device will be tracked and one device will be created for `HomeAssistant`
+   * **SleepAsAndroid/%%%device%%%** - all sub topics in `SleepAsAndroid/` will be recognized as devices
+   * **devices/%%%device%%%/SleepAsAndroidData** - all subtopic in `devices/` will be used as devices, data will be taken from `/SleepAsAndroidData` for every device, ie `devices/igor/SleepAsAndroidData` for device _igor_
  * `QOS`: quality of service for MQTT 
 
 #### Application configuration
@@ -44,9 +48,8 @@ To configure `Sleep As Android` for working with this integration:
  
  Then:
  * Enable it
- * `URL` is a URL for your MQTT server. It should look like `tpc:///mqtt_user:mqtt_password@mqtt_host:mqtt_port`
- * `Topic` is a topic name where the application will publish events. MUST be a subtopic in **Root topic** from integration settings. Topic name will be used as a suffix for the default device name in HomeAssistant.
-   * For example, if your root topic is `SleepAsAndroid`, a valid subtopic would be `SleepAsAndroid/username`.
+ * `URL` is a URL for your MQTT server. It should look like `tcp:///mqtt_user:mqtt_password@mqtt_host:mqtt_port`
+ * `Topic` is a topic name where the application will publish events. See `Topic template` section of component configuration for details.
  * `Client ID` is any ID. It is not used by integration and is not published to MQTT (now).
 
 ![SleepAsAndroid configuration](./docs/images/SleepAsAndroidSetup.png)
@@ -54,16 +57,24 @@ To configure `Sleep As Android` for working with this integration:
 More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/application-configuration).
  
 ## Usage
-`<name>` is an integration name in lower case without spaces from the `Settings` dialog.
-List of events is available at [Sleep As Android documentation page](https://docs.sleep.urbandroid.org/services/automation.html#events)
-
+### blueprint (coming soon) ###
+ 1. import blueprint
+ 2. create automatization based on blueprint:
+    * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vocation in Siberia, for example)
+    * add actions for [evens]((https://docs.sleep.urbandroid.org/services/automation.html#events))
+    
 ### on device event (recommended)
  1. select `Device` in automatization trigger and use `SleepAsAndroid` device;
  1. select trigger from a list.
  
 ### on sensor state change
-State of sensor `sensor.<name>` will contain the recent event name, that got published by the application.
+`<name>` is an integration name in lower case without spaces from the `Settings` dialog.
+`<device>` is a device name
+List of events is available at [Sleep As Android documentation page](https://docs.sleep.urbandroid.org/services/automation.html#events)
+
+State of sensor `sensor.<name>_<device>` will contain the recent event name, that got published by the application.
 ### on event
+`<name>` is an integration name in lower case without spaces from the `Settings` dialog.
 If application publishes a new event, then integration fires `<name>` event with payload:
 ```json
 {
