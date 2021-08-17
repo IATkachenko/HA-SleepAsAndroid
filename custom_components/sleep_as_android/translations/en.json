@@ -5,9 +5,8 @@
       "user": {
         "title": "Configuration for Sleep As Android",
         "data": {
-          "name": "Name for sensor and events ",
-          "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
-          "root_topic": "Topic at MQTT-server with Sleep As Android subtopics. All subtopics will be created as independent devices. Must be consistent with application settings",
+          "name": "Name for sensor and events",
+          "topic_template": "Topic at MQTT-server with Sleep As Android events",
           "qos": "Quality of service for MQTT"
         }
       }
@@ -18,9 +17,8 @@
       "user": {
         "title": "Sleep As Android integration",
         "data": {
-          "name": "Name for sensor and events ",
-          "topic": "Topic at MQTT-server with Sleep As Android events. Must be same as in application settings",
-          "root_topic": "Topic at MQTT-server with Sleep As Android subtopics. All subtopics will be created as independent devices. Must be consistent with application settings",
+          "name": "Name for sensor and events",
+          "topic_template": "Topic at MQTT-server with Sleep As Android events",
           "qos": "Quality of service for MQTT"
         }
       }
