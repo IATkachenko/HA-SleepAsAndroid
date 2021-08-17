@@ -10,7 +10,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.entity_registry import async_entries_for_config_entry
+from homeassistant.helpers.entity_registry import async_entries_for_config_entry, EntityRegistry
+
 
 from .device_trigger import TRIGGERS
 from .const import DOMAIN
@@ -31,16 +32,33 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         entities = async_entries_for_config_entry(instance.entity_registry, config_entry.entry_id)
         sensors: List[SleepAsAndroidSensor] = []
         for entity in entities:
+
             device_name = instance.device_name_from_entity_id(entity.unique_id)
+            # If we in update mode, then remove instance_name prefix from device name
+            if instance.updating:
+                _LOGGER.info(f"We in updating mode. Removing prefix {instance.name} for {device_name}")
+                device_name = device_name.removeprefix(instance.name+"_")
+                instance.entity_registry.async_update_entity(
+                    entity_id=entity.entity_id,
+                    new_unique_id=instance.create_entity_id(device_name)
+                )
             _LOGGER.debug(f"add_configured_entities: creating sensor with name {device_name}")
             (sensor, _) = instance.get_sensor(device_name)
+            if instance.updating:
+                await sensor.device_update()
             sensors.append(sensor)
 
         async_add_entities(sensors)
 
     instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
     await add_configured_entities()
-    _LOGGER.debug("async_setup_entry: adding configured entities is finished. Going to subscribe to root topic")
+    _LOGGER.debug("async_setup_entry: adding configured entities is finished.")
+
+    if instance.updating:
+        _LOGGER.debug("We need update. Running self_update")
+        instance.self_update()
+
+    _LOGGER.debug("Going to subscribe to root topic.")
     await instance.subscribe_root_topic(async_add_entities)
     _LOGGER.debug("async_setup_entry is finished")
     return True
@@ -142,6 +160,25 @@ class SleepAsAndroidSensor(Entity):
     @property
     def device_info(self):
         _LOGGER.debug("My identifiers is %s", {(DOMAIN, self.unique_id)})
-        info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self._name, "manufacturer": "SleepAsAndroid",
+        info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid",
                 "type": None, "model": "MQTT"}
         return info
+
+    async def device_update(self) -> None:
+        if not self._instance.updating:
+            return
+
+        device_registry = await dr.async_get_registry(self.hass)
+        # Instance in updating mode. Device should be update too
+        _LOGGER.info("Updating device identifiers")
+        # v1.2.4 -> v1.2.5 update
+        old_identifiers = {(DOMAIN, self._instance.name + "_" + self.unique_id)}
+        _LOGGER.info(f"Trying to get v1.2.4 device {old_identifiers}")
+        device = device_registry.async_get_device(identifiers=old_identifiers, connections=set())
+        if device is not None:
+            _LOGGER.info(f"Found device {device.id} from v1.2.4. Updating ... ")
+            device_registry.async_update_device(
+                device_id=device.id,
+                new_identifiers=self.device_info['identifiers']
+            )
+        _LOGGER.info("Device updating finished")
