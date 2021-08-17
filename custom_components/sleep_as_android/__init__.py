@@ -3,7 +3,7 @@
 import logging
 from typing import Dict, Callable
 
-from homeassistant.config_entries import ConfigEntry, ConfigEntries
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import entity_registry as er
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.components.mqtt import subscription
