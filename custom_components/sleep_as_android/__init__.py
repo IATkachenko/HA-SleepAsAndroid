@@ -211,10 +211,17 @@ class SleepAsAndroidInstance:
         """
         old_options = self._config_entry.options
         _LOGGER.debug(f"old options is {old_options}")
-        new_options = {
-            'name': old_options['name'],
-            'qos': old_options['qos']
-        }
+        try:
+            new_options = {
+                'name': old_options['name'],
+                'qos': old_options['qos']
+            }
+        except KeyError:
+            _LOGGER.debug("old options was not found. Will use defaults")
+            new_options = {
+                'name': self._name,
+                'qos': 0,
+            }
         try:
             topic = old_options['root_topic']
             new_topic = topic + "/" + DEVICE_MACRO
