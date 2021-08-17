@@ -249,5 +249,3 @@ class SleepAsAndroidInstance:
         )
         _LOGGER.info("Done!")
         self._updating = False
-
-
