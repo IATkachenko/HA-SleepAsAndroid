@@ -98,6 +98,7 @@ jobs:
       - name: "Zip component dir"
         working-directory: ./custom_components/${{ env.package }}
         run: |
+          rm -f manifest.json.tpl
           zip ${{ env.archive }} -r ./
 
       - name: "Upload zip to release"
