@@ -190,7 +190,7 @@ class SleepAsAndroidInstance:
         try:
             return self.__sensors[sensor_name], False
         except KeyError:
-            _LOGGER.info("New device! Let's create sensor for %%s", sensor_name)
+            _LOGGER.info("New device! Let's create sensor for %s", sensor_name)
             new_sensor = SleepAsAndroidSensor(self.hass, self._config_entry, sensor_name)
             self.__sensors[sensor_name] = new_sensor
             return new_sensor, True
