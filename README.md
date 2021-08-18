@@ -1,6 +1,6 @@
 ![version_badge](https://img.shields.io/badge/recommended%20HA%20version-2021.7-red)
 ![Validate with hassfest](https://github.com/IATkachenko/HA-SleepAsAndroid/workflows/Validate%20with%20hassfest/badge.svg) 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs) 
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs) 
 [![Custom badge](https://img.shields.io/endpoint?color=orange&label=patreon&url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%2F%3Fusername%3DIATkachenko%26type%3Dpatrons)](https://www.patreon.com/IATkachenko)
 
 # Sleep As Android custom integration
@@ -24,11 +24,14 @@ You will need:
      * enable and configure MQTT
 
 ### Installation
- * go to HACS->Integrations->three dots at upper-right conner->Custom repositories
- * add `IATkachenko/HA-SleepAsAndroid` to `ADD CUSTOM REPOSITORY` field and select `Integration` in `CATEGORY`
- * click `add` button
- * find `Sleep As Andorid` integration;
- * click `Install` (Home assistant restart may be required);
+ * go to [HACS](https://hacs.xyz/docs/installation/installation) -> `Integrations`
+ * press `+ Explore & Add repositories` button
+ * type `Sleep As Android` in search field and click at integration name
+ * press `Install this repository to HACS` button
+ * press `Install` button _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
+ * restart **Home Assistant** 
+ * go to **Home Assistant** `Settings` -> `Integrations` -> `Add Integration` (right bottom conner)
+ * type `Sleep As Android` in search field and click at integration name
 
 ### Configuration 
 #### Component configuration
