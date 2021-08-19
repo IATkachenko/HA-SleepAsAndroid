@@ -1,23 +1,15 @@
 import logging
 import voluptuous as vol
-from distutils.version import StrictVersion
 
 from homeassistant.const import (CONF_TYPE, CONF_PLATFORM, CONF_DOMAIN, CONF_DEVICE_ID, )
-from homeassistant.const import __version__ as homeassistant_version
 from homeassistant.components.homeassistant.triggers import event as event_trigger
 from homeassistant.core import HomeAssistant
+from homeassistant.components.device_automation import DEVICE_TRIGGER_BASE_SCHEMA as HA_TRIGGER_BASE_SCHEMA
 
 from .const import DOMAIN
 
-_LOGGER = logging.getLogger(__name__)
 
-if StrictVersion(homeassistant_version) >= StrictVersion("2021.7"):
-    from homeassistant.components.device_automation import DEVICE_TRIGGER_BASE_SCHEMA as HA_TRIGGER_BASE_SCHEMA
-else:
-    # TRIGGER_BASE_SCHEMA was renamed to DEVICE_TRIGGER_BASE_SCHEMA in 2021.7
-    _LOGGER.info("You are using old version (%s) of Home Assistant. Support of this version by the integration may be "
-                 "dropped.", homeassistant_version)
-    from homeassistant.components.device_automation import TRIGGER_BASE_SCHEMA as HA_TRIGGER_BASE_SCHEMA
+_LOGGER = logging.getLogger(__name__)
 
 # available at https://docs.sleep.urbandroid.org/services/automation.html#events
 TRIGGERS = [
