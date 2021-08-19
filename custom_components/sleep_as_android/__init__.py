@@ -43,12 +43,6 @@ class SleepAsAndroidInstance:
         except KeyError:
             self._name = 'SleepAsAndroid'
 
-        try:
-            _tt = self._config_entry.options['topic_template']
-            self._updating = False
-        except KeyError:
-            self._updating = True
-
         # will call async_setup_entry from sensor.py
         self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
         # ToDo prepare topic_template and other variables that should be defined one time.
@@ -216,47 +210,3 @@ class SleepAsAndroidInstance:
             new_sensor = SleepAsAndroidSensor(self.hass, self._config_entry, sensor_name)
             self.__sensors[sensor_name] = new_sensor
             return new_sensor, True
-
-    @property
-    def updating(self) -> bool:
-        return self._updating
-
-    def self_update(self):
-        """
-        Run updating routine
-        """
-        old_options = self._config_entry.options
-        _LOGGER.debug(f"old options is {old_options}")
-        try:
-            new_options = {
-                'name': old_options['name'],
-                'qos': old_options['qos']
-            }
-        except KeyError:
-            _LOGGER.debug("old options was not found. Will use defaults")
-            new_options = {
-                'name': self._name,
-                'qos': 0,
-            }
-        try:
-            topic = old_options['root_topic']
-            new_topic = topic + "/" + DEVICE_MACRO
-            _LOGGER.info(f"Found root_topic {topic} from v1.2.4. Will replace it by {new_topic}")
-        except KeyError:
-            _LOGGER.info(f"root_topic for v1.2.4 not found. Will try 'topic' from v1.1.0")
-            try:
-                topic = old_options['topic']  # full topic for message. Should cut after last /
-                new_topic = '/'.join(topic.split('/')[:-1]) + "/" + DEVICE_MACRO
-                _LOGGER.info(f"Found topic '{topic}' from v1.1.0. Will replace it by {new_topic}")
-            except KeyError:
-                new_topic = self.configured_topic
-                _LOGGER.info(f"No topic information from previous versions found. Will use {new_topic}")
-
-        new_options['topic_template'] = new_topic
-        _LOGGER.info("Updating...")
-        self.hass.config_entries.async_update_entry(
-            self._config_entry,
-            options=new_options
-        )
-        _LOGGER.info("Done!")
-        self._updating = False
