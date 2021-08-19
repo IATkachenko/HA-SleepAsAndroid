@@ -10,7 +10,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.entity_registry import async_entries_for_config_entry, EntityRegistry
+from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 
 
 from .device_trigger import TRIGGERS
