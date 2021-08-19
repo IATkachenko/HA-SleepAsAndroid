@@ -93,4 +93,3 @@ async def async_attach_trigger(hass: HomeAssistant, config, action, automation_i
     return await event_trigger.async_attach_trigger(
         hass, event_config, action, automation_info, platform_type="device"
     )
-
