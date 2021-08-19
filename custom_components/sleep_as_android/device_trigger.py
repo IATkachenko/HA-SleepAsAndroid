@@ -2,7 +2,7 @@ import logging
 import voluptuous as vol
 from distutils.version import StrictVersion
 
-from homeassistant.const import (CONF_ENTITY_ID, CONF_TYPE, CONF_PLATFORM, CONF_DOMAIN, CONF_DEVICE_ID, )
+from homeassistant.const import (CONF_TYPE, CONF_PLATFORM, CONF_DOMAIN, CONF_DEVICE_ID, )
 from homeassistant.const import __version__ as homeassistant_version
 from homeassistant.components.homeassistant.triggers import event as event_trigger
 from homeassistant.core import HomeAssistant
