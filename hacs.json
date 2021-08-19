@@ -1,4 +1,5 @@
  {
+  "homeassistant":  "2021.7.0",
   "name": "Sleep As Android",
   "render_readme": true,
   "zip_release": true,
