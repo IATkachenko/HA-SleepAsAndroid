@@ -62,7 +62,10 @@ jobs:
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
 
-    steps:      
+    steps:
+    - name: Get footer
+      id: footer
+      run: echo "RELEASE_FOOTER='$(cat docs/feedback.md)'" >> $GITHUB_ENV
     - name: Create Release
       id: release
       uses: actions/create-release@v1      
@@ -74,6 +77,7 @@ jobs:
         body: |
           [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
           ${{ needs.changes.outputs.clean_changelog }}
+          ${{ env.RELEASE_FOOTER }}
 
   add_archive_to_release:
     name: "Add release archive"
