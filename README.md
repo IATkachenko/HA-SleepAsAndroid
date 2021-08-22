@@ -51,7 +51,7 @@ To configure `Sleep As Android` for working with this integration:
  
  Then:
  * Enable it
- * `URL` is a URL for your MQTT server. It should look like `tcp:///mqtt_user:mqtt_password@mqtt_host:mqtt_port`
+ * `URL` is a URL for your MQTT server. It should look like `tcp://mqtt_user:mqtt_password@mqtt_host:mqtt_port`
  * `Topic` is a topic name where the application will publish events. See `Topic template` section of component configuration for details. Application settings **MUST NOT** have `%%%device%%%` macro. Use desired device name at postion of `%%%device%%%` of integration configuration. Examples related to integration configuration above: **SleepAsAndroid/igor** or **devices/igor/SleepAsAndroidData**. Device name will be "igor" in both cases.
  * `Client ID` is any ID. It is not used by integration and is not published to MQTT (now).
 
