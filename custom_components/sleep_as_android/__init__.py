@@ -77,6 +77,12 @@ class SleepAsAndroidInstance:
         """
         result: str = "unknown_device"
         s = topic.split('/')
+        if position >= len(s):
+            # If we have no DEVICE_MACRO in configured_topic,
+            # then device_position_in_topic is greater than topic length and we should use
+            # last segment of topic as device name
+            position = len(s) - 1
+
         try:
             result = s[position]
         except KeyError:
@@ -98,7 +104,12 @@ class SleepAsAndroidInstance:
         Converts topic with {device} to MQTT topic for subscribing
         """
         splitted = self.configured_topic.split('/')
-        splitted[self.device_position_in_topic] = '+'
+        try:
+            splitted[self.device_position_in_topic] = '+'
+        except IndexError:
+            # If we have no DEVICE_MACRO in configured_topic,
+            # then device_position_in_topic is greater than topic length
+            pass
         return '/'.join(splitted)
 
     def get_from_config(self, name: str) -> str:
