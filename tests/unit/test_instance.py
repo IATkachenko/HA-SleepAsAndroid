@@ -42,6 +42,23 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
             instance = TestingSleepAsAndroidInstance(hass=None, config_entry=None, registry=None)
             self.assertEqual(instance.device_position_in_topic, 1)
 
+    def test_topic_template(self):
+        name = uuid.uuid4()
+        varaints = (
+            ['foo/bar', 'foo/bar' ],
+            ['baz/%%%device%%%', 'baz/+'],
+            ['foo/%%%device%%%/bar', 'foo/+/bar'],
+            ['foo/%%%device%%%baz/bar', 'foo/%%%device%%%baz/bar'],
+        )
+        for template, expect in varaints:
+            type(config_entry).options = PropertyMock(
+                return_value={
+                    'name': name,
+                    'topic_template': template,
+            })
+            with self.subTest(template=template):
+                instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
+                self.assertEqual(instance.topic_template, expect)
 
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
@@ -61,4 +78,4 @@ class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=3)
