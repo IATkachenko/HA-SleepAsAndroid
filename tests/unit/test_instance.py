@@ -42,21 +42,19 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
             instance = TestingSleepAsAndroidInstance(hass=None, config_entry=None, registry=None)
             self.assertEqual(instance.device_position_in_topic, 1)
 
-    def test_topic_template(self):
-        name = uuid.uuid4()
-        varaints = (
-            ['foo/bar', 'foo/bar' ],
-            ['baz/%%%device%%%', 'baz/+'],
-            ['foo/%%%device%%%/bar', 'foo/+/bar'],
-            ['foo/%%%device%%%baz/bar', 'foo/%%%device%%%baz/bar'],
+    @patch(__name__+".SleepAsAndroidInstance.configured_topic", new_callable=PropertyMock)
+    @patch(__name__+".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
+    def test_topic_template(self, mocked_device_position_in_topic, mocked_configured_topic):
+        variants = (
+            ['foo/bar', 2, 'foo/bar'],
+            ['baz/%%%device%%%', 1, 'baz/+'],
+            ['foo/%%%device%%%/bar', 1, 'foo/+/bar'],
+            ['foo/%%%device%%%baz/bar', 3, 'foo/%%%device%%%baz/bar'],
         )
-        for template, expect in varaints:
-            type(config_entry).options = PropertyMock(
-                return_value={
-                    'name': name,
-                    'topic_template': template,
-            })
-            with self.subTest(template=template):
+        for template, position, expect in variants:
+            with self.subTest(template=template, position=position, expect=expect):
+                mocked_device_position_in_topic.return_value = position
+                mocked_configured_topic.return_value = template
                 instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
                 self.assertEqual(instance.topic_template, expect)
 
