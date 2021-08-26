@@ -8,7 +8,8 @@ services:
     volumes:
       - ./ha-config:/config:rw
       - ./configuration.yaml:/config/configuration.yaml:ro
-      - ../custom_components:/config/custom_components:ro
+        #      - ../custom_components:/config/custom_components:ro
+      - ./custom_components_hacs:/config/custom_components:rw
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       - mqtt-server
