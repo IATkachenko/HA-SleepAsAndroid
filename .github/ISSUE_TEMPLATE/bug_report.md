@@ -8,8 +8,19 @@ assignees: ''
 ---
 
 ## General information
+### Home Assistant
+**Version:**
+**Installation method** (according to [instructions](https://www.home-assistant.io/installation/)):
+[ ] Operating System
+[ ] Container
+[ ] Supervised
+[ ] Core
 ### Integration
 <!-- some information about integration -->
+**Installation method:**
+[ ] HACS
+[ ] manual from release
+[ ] manual from git
 **Integration version:** 
 **Root topic:** 
 ### Application settings
