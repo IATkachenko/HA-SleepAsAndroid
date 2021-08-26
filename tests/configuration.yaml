@@ -13,4 +13,5 @@ mqtt:
 logger:
   default: warning
   logs:
+    custom_components: debug
     custom_components.sleep_as_android: debug
