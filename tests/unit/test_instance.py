@@ -60,6 +60,25 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
                 instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
                 self.assertEqual(instance.topic_template, expect)
 
+    def test_name(self):
+        name = uuid.uuid4()
+
+        type(config_entry).options = PropertyMock(
+            return_value={
+                'name': name,
+                'topic_template': uuid.uuid4(),
+            })
+        instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
+        self.assertEqual(instance.name, name)
+
+        #  check default name
+        type(config_entry).options = PropertyMock(return_value={})
+        type(config_entry).data = PropertyMock(return_value={})
+
+        instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
+        self.assertEqual(instance.name, 'SleepAsAndroid')
+
+
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
         ret = await sleep_as_android.async_setup(None, None)
