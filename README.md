@@ -63,7 +63,7 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
 ### blueprint (coming soon) ###
  1. import blueprint
  2. create automatization based on blueprint:
-    * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vocation in Siberia, for example)
+    * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vacation in Siberia, for example)
     * add actions for [evens]((https://docs.sleep.urbandroid.org/services/automation.html#events))
     
 ### on device event (recommended)
