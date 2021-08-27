@@ -8,6 +8,7 @@ services:
     volumes:
       - ./ha-config:/config:rw
       - ./configuration.yaml:/config/configuration.yaml:ro
+      - ./automations.yaml:/config/automations.yaml:rw
       - ../custom_components:/config/custom_components:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
