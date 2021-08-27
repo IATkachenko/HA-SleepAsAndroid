@@ -25,14 +25,14 @@ def main():
             "name": "Sleep as Android MQTT actions",
             "description": "Define actions based on Sleep As Android sensor states",
             "domain": "automation",
-            "source_url": "",
+            "source_url": "https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint.yaml",
             "input": {
                 "device": {
-                    "name": "SleepAsAndroid sensor",
-                    "description": "Sensor for Sleep as Android device",
+                    "name": "SleepAsAndroid device",
+                    "description": "Device for Sleep as Android ",
                     "selector": {
-                        "entity": {
-                            "domain": f"{DOMAIN}"
+                        "device": {
+                            "integration": f"{DOMAIN}",
                         }
                     }
                 },
@@ -54,12 +54,7 @@ def main():
         },
         "mode": "queued",
         "max_exceeded": "silent",
-        "trigger": [
-            {
-                "platform": "state",
-                "entity_id": tagged_empty_scalar("input", "'device'")
-            }
-        ],
+        "trigger": [],
         "condition": [
             {
                 "condition": "state",
@@ -67,16 +62,9 @@ def main():
                 "state": tagged_empty_scalar("input", "state")
             }
         ],
-        "action": [
-            {
-                "variables": {
-                    "action": "{{ trigger.to_state.state }}"
-                }
-            },
-            {
+        "action": [{
                 "choose": []
-            }
-        ]
+        }]
     }
 
     for t in TRIGGERS:
@@ -86,9 +74,20 @@ def main():
             "default": [],
             "selector": {"action": {} }
         }
-        blueprint["action"][1]["choose"].append({
-            "conditions": single_quote_dump(f"'{{{{ action == ''''{t}'''' }}}}'"),
+        blueprint["action"][0]["choose"].append({
+            "conditions": {
+                "condition": "trigger",
+                "id": f"{t}",
+            },
             "sequence": tagged_empty_scalar("input", f"'{t}'")
+        })
+        blueprint["trigger"].append({
+                "platform": "device",
+                "domain": f"{DOMAIN}",
+                "device_id": tagged_empty_scalar("input", "'device'"),
+                "type": f"{t}",
+                "id": f"{t}",
+
         })
 
     string_stream = StringIO()
