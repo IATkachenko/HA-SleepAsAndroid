@@ -11,6 +11,7 @@ services:
       - ./automations.yaml:/config/automations.yaml:rw
       - ../custom_components:/config/custom_components:ro
       - /etc/localtime:/etc/localtime:ro
+      - ../blueprint.yaml:/config/blueprints/automation/SleepAsAndroid/blueprint.yaml:ro
     depends_on:
       - mqtt-server
     environment:
