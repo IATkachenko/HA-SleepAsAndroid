@@ -5,6 +5,8 @@ image:
 logbook:
 person:
 system_health:
+automation: !include automations.yaml
+
 #default_config:
 
 mqtt:
