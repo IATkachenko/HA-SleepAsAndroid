@@ -60,7 +60,7 @@ To configure `Sleep As Android` for working with this integration:
 More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/application-configuration).
  
 ## Usage
-### blueprint ###
+### blueprint (recommended)
  1. import [blueprint](blueprint.yaml):
     1. Got to Home Assistant `settings` 
     2. `blueprints` 
@@ -72,7 +72,7 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
     * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vacation in Siberia, for example)
     * add actions for [evens]((https://docs.sleep.urbandroid.org/services/automation.html#events))
     
-### on device event (recommended)
+### on device event
  1. select `Device` in automatization trigger and use `SleepAsAndroid` device;
  1. select trigger from a list.
  
