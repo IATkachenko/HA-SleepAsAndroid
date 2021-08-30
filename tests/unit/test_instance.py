@@ -28,6 +28,7 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
     def test_device_name_from_topic_and_position(self):
         topic = 'foo/bar/baz/moo'
         variants = (
+            ['test', 1, 'test'],
             [topic, 2, 'baz'],
             [topic, 8, 'moo']
         )
