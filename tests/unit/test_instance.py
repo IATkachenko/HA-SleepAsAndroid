@@ -78,6 +78,18 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
         instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
         self.assertEqual(instance.name, 'SleepAsAndroid')
 
+    @patch(__name__+".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
+    def test_device_name_from_topic(self, mocked_device_position_in_topic):
+        topic = 'foo/bar/baz/moo'
+        variants = (
+            ['test', 1, 'test'],
+            [topic, 2, 'baz'],
+            [topic, 8, 'moo']
+        )
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        for t, position, expect in variants:
+            mocked_device_position_in_topic.return_value = position
+            self.assertEqual(instance.device_name_from_topic(t), expect)
 
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
