@@ -1,6 +1,7 @@
 import unittest
 import unittest.mock as mock
 from unittest.mock import patch, AsyncMock, MagicMock, PropertyMock
+from homeassistant.helpers import entity_registry
 import aiounittest
 import sys
 import os
@@ -130,6 +131,13 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
             with self.subTest(name=name, entity_id=entity_id, expect=e):
                 mocked_name.return_value = name
                 self.assertEqual(instance.device_name_from_entity_id(entity_id), e)
+
+    @patch('homeassistant.helpers.entity_registry.async_get_registry', spec=entity_registry.EntityRegistry)
+    def test_entity_registry(self, mocked_entity_registry):
+        instance = SleepAsAndroidInstance(hass, config_entry, mocked_entity_registry)
+        self.assertIsInstance(instance.entity_registry, entity_registry.EntityRegistry)
+
+
 
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
