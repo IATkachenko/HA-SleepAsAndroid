@@ -109,6 +109,18 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
         mocked_get_from_config.side_effect = side_effect
         self.assertEqual(instance.configured_topic, 'SleepAsAndroid/' + DEVICE_MACRO)
 
+    @patch(__name__+".SleepAsAndroidInstance.name", new_callable=PropertyMock)
+    def test_create_entity_id(self, mocked_name):
+        variants = (
+            [ 'foo', 'bar', 'foo_bar' ],
+        )
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        for name, device_name, e in variants:
+            with self.subTest(name=name, device_name=device_name, expect=e):
+                mocked_name.return_value = name
+                self.assertEqual(instance.create_entity_id(device_name), e)
+
+
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
         ret = await sleep_as_android.async_setup(None, None)
