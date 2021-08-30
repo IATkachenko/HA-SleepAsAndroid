@@ -11,7 +11,7 @@ import sleep_as_android
 sys.path.append(os.path.join(sys.path[0], "../../custom_components"))
 
 from sleep_as_android import SleepAsAndroidInstance
-from sleep_as_android.const import DOMAIN
+from sleep_as_android.const import DOMAIN, DEVICE_MACRO
 
 SleepAsAndroidInstance_cache = SleepAsAndroidInstance
 hass = MagicMock()
@@ -90,6 +90,24 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
         for t, position, expect in variants:
             mocked_device_position_in_topic.return_value = position
             self.assertEqual(instance.device_name_from_topic(t), expect)
+
+    @patch(__name__+".SleepAsAndroidInstance.get_from_config")
+    def test_configured_topic(self, mocked_get_from_config):
+        def side_effect(_arg):
+            raise KeyError
+
+        variants = (
+            ['foo'],
+            ['foo/bar']
+        )
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        for v in variants:
+            with self.subTest(topic=v, expect=v):
+                mocked_get_from_config.return_value = v
+                self.assertEqual(instance.configured_topic, v)
+
+        mocked_get_from_config.side_effect = side_effect
+        self.assertEqual(instance.configured_topic, 'SleepAsAndroid/' + DEVICE_MACRO)
 
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
