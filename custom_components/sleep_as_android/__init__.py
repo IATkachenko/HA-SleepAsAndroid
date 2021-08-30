@@ -77,12 +77,7 @@ class SleepAsAndroidInstance:
             # last segment of topic as device name
             position = len(s) - 1
 
-        try:
-            result = s[position]
-        except KeyError:
-            pass
-
-        return result
+        return s[position]
 
     def device_name_from_topic(self, topic: str) -> str:
         """Get device name from topic

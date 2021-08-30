@@ -27,14 +27,15 @@ class TestingSleepAsAndroidInstance(SleepAsAndroidInstance):
 class SleepAsAndroidInstanceTests(unittest.TestCase):
     def test_device_name_from_topic_and_position(self):
         topic = 'foo/bar/baz/moo'
-        self.assertEqual(
-            SleepAsAndroidInstance.device_name_from_topic_and_position(topic, 2),
-            'baz'
+        variants = (
+            [topic, 2, 'baz'],
+            [topic, 8, 'moo']
         )
-        self.assertEqual(
-            SleepAsAndroidInstance.device_name_from_topic_and_position(topic, 8),
-            'moo'
-        )
+        for t, position, expect in variants:
+            self.assertEqual(
+                SleepAsAndroidInstance.device_name_from_topic_and_position(t, position),
+                expect
+            )
 
     def test_device_position_in_topic(self):
         with patch(__name__+'.TestingSleepAsAndroidInstance.configured_topic', new_callable=mock.PropertyMock ) as mock_configured_topic:
