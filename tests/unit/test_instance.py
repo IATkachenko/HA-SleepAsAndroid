@@ -120,6 +120,16 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
                 mocked_name.return_value = name
                 self.assertEqual(instance.create_entity_id(device_name), e)
 
+    @patch(__name__ + ".SleepAsAndroidInstance.name", new_callable=PropertyMock)
+    def test_device_name_from_entity_id(self, mocked_name):
+        variants = (
+            ['foo', 'foo_bar', 'bar'],
+        )
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        for name, entity_id, e in variants:
+            with self.subTest(name=name, entity_id=entity_id, expect=e):
+                mocked_name.return_value = name
+                self.assertEqual(instance.device_name_from_entity_id(entity_id), e)
 
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
