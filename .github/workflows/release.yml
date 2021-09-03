@@ -88,7 +88,8 @@ jobs:
     steps:
       - name: "Check out repository"
         uses: actions/checkout@v2
-        ref: ${{ needs.changes.outputs.tag }}
+        with:
+          ref: ${{ needs.changes.outputs.tag }}
 
       - name: "Set package name"
         working-directory: ./custom_components
