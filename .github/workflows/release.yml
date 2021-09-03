@@ -70,7 +70,9 @@ jobs:
 
     - name: Get footer
       id: footer
-      run: echo "RELEASE_FOOTER='$(cat docs/feedback.md)'" >> $GITHUB_ENV
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: ./docs/feedback.md
 
     - name: "Set package name"
       working-directory: ./custom_components
@@ -101,4 +103,4 @@ jobs:
         body: |
           [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
           ${{ needs.changes.outputs.clean_changelog }}
-          ${{ env.RELEASE_FOOTER }}
+          ${{ steps.footer.outputs.content }}
