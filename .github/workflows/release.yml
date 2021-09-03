@@ -65,57 +65,40 @@ jobs:
     steps:
     - name: "Check out repository"
       uses: actions/checkout@v2
+      with:
+          ref: ${{ needs.changes.outputs.tag }}
+
     - name: Get footer
       id: footer
       run: echo "RELEASE_FOOTER='$(cat docs/feedback.md)'" >> $GITHUB_ENV
+
+    - name: "Set package name"
+      working-directory: ./custom_components
+      run: |
+        echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
+
+    - name: "Set variables"
+      working-directory: ./custom_components
+      run: |
+        echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+        echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+        env
+
+    - name: "Zip component dir"
+      working-directory: ./custom_components/${{ env.package }}
+      run: |
+        rm -f manifest.json.tpl
+        zip ${{ env.archive }} -r ./
+
     - name: Create Release
       id: release
-      uses: actions/create-release@v1      
-      env:
-        GITHUB_TOKEN: ${{ secrets.github_token }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ needs.changes.outputs.tag }}
-        release_name: ${{ needs.changes.outputs.tag }}
+        name: ${{ needs.changes.outputs.tag }}
         draft: true
+        files: ${{ env.basedir }}/${{ env.archive }}
         body: |
           [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
           ${{ needs.changes.outputs.clean_changelog }}
           ${{ env.RELEASE_FOOTER }}
-
-  add_archive_to_release:
-    name: "Add release archive"
-    needs: [ 'changes', 'release' ]
-    if: ${{ needs.changes.outputs.skipped == 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Check out repository"
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ needs.changes.outputs.tag }}
-
-      - name: "Set package name"
-        working-directory: ./custom_components
-        run: |
-          echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
-
-      - name: "Set variables"
-        working-directory: ./custom_components
-        run: |
-          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
-          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
-          env
-
-      - name: "Zip component dir"
-        working-directory: ./custom_components/${{ env.package }}
-        run: |
-          rm -f manifest.json.tpl
-          zip ${{ env.archive }} -r ./
-
-      - name: "Upload zip to release"
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.github_token }}
-          file: ${{ env.basedir }}/${{ env.archive }}
-          asset_name: ${{ env.archive }}
-          tag: ${{ needs.changes.outputs.tag }}
-          overwrite: true
