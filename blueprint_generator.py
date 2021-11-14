@@ -97,6 +97,9 @@ def main():
     string_stream.close()
     print(output_str.replace('"', "'"))
 
+    with open('blueprint.yaml', 'w') as outfile:
+        yaml.dump(blueprint, outfile)
+
 
 if __name__ == '__main__':
     main()
