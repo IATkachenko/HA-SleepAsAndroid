@@ -62,7 +62,8 @@ jobs:
       - name: Update blueprint
         id: update_blueprint
         run: |
-            pip install ruamel.yaml
+            pip install ruamel.yaml wheel
+            pip install homeassistant
             python blueprint_generator.py || true
 
       - name: Commit bluepint
