@@ -80,6 +80,12 @@ blueprint:
       default: []
       selector:
         action: {}
+    show_skip_next_alarm:
+      name: show_skip_next_alarm
+      description: show_skip_next_alarm event
+      default: []
+      selector:
+        action: {}
     rem:
       name: rem
       description: rem event
@@ -182,6 +188,12 @@ blueprint:
       default: []
       selector:
         action: {}
+    before_alarm:
+      name: before_alarm
+      description: before_alarm event
+      default: []
+      selector:
+        action: {}
 mode: queued
 max_exceeded: silent
 trigger:
@@ -235,6 +247,11 @@ trigger:
   device_id: !input 'device'
   type: alarm_skip_next
   id: alarm_skip_next
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: show_skip_next_alarm
+  id: show_skip_next_alarm
 - platform: device
   domain: sleep_as_android
   device_id: !input 'device'
@@ -320,6 +337,11 @@ trigger:
   device_id: !input 'device'
   type: sound_event_laugh
   id: sound_event_laugh
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: before_alarm
+  id: before_alarm
 condition:
 - condition: state
   entity_id: !input person
@@ -366,6 +388,10 @@ action:
       condition: trigger
       id: alarm_skip_next
     sequence: !input 'alarm_skip_next'
+  - conditions:
+      condition: trigger
+      id: show_skip_next_alarm
+    sequence: !input 'show_skip_next_alarm'
   - conditions:
       condition: trigger
       id: rem
@@ -434,3 +460,7 @@ action:
       condition: trigger
       id: sound_event_laugh
     sequence: !input 'sound_event_laugh'
+  - conditions:
+      condition: trigger
+      id: before_alarm
+    sequence: !input 'before_alarm'
