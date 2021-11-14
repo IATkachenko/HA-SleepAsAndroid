@@ -23,6 +23,7 @@ TRIGGERS = [
     "alarm_alert_start",
     "alarm_alert_dismiss",
     "alarm_skip_next",
+    "show_skip_next_alarm",
     "rem",
     "smart_period",
     "before_smart_period",
@@ -39,7 +40,8 @@ TRIGGERS = [
     "sound_event_talk",
     "sound_event_cough",
     "sound_event_baby",
-    "sound_event_laugh"
+    "sound_event_laugh",
+    "before_alarm"
 ]
 
 TRIGGER_SCHEMA = HA_TRIGGER_BASE_SCHEMA.extend(
