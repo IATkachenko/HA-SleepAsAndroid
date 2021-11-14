@@ -37,6 +37,10 @@ jobs:
     steps:
       - name: "Check out repository"
         uses: actions/checkout@v2
+      - name: setup python
+        uses: actions/setup-python@v2              
+        with:
+          python-version: '3.10'
 
       - name: "Prepare"
         run: |
@@ -54,13 +58,10 @@ jobs:
         # No type: it may be "feat" or "fix" version changes, and we don't know what exact we should use
         run: |
           git commit -m "version update" custom_components/sleep_as_android/manifest.json
-
+          
       - name: Update blueprint
-        uses: actions/setup-python@v2
         id: update_blueprint
-        with:
-          python-version: '3.10'
-        - run: |
+        run: |
             pip install ruamel.yaml
             python blueprint_generator.py || true
 
