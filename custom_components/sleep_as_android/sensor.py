@@ -5,8 +5,9 @@ Sensor for Sleep as android states
 import logging
 import json
 
-from homeassistant.helpers.entity import Entity
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.helpers import device_registry as dr
@@ -49,7 +50,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     return True
 
 
-class SleepAsAndroidSensor(Entity):
+class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         self._instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
 
@@ -70,6 +71,14 @@ class SleepAsAndroidSensor(Entity):
         device = device_registry.async_get_device(identifiers=self.device_info['identifiers'], connections=set())
         _LOGGER.debug("My device id is %s", device.id)
         self._device_id = device.id
+
+        if (old_state := await self.async_get_last_state()) is not None:
+            self._state = old_state.state
+            _LOGGER.debug(f"async_added_to_hass: restored previous state for {self.name}: {self.state}")
+        else:
+            # No previous state. It is fine, but it would be nice to report
+            _LOGGER.debug(f"async_added_to_hass: no previously saved state for {self.name}")
+
         self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self):
