@@ -1,6 +1,7 @@
 """Sleep As Android integration"""
 
 import logging
+from functools import cached_property, cache
 from typing import Dict, Callable
 
 from homeassistant.config_entries import ConfigEntry
@@ -47,7 +48,7 @@ class SleepAsAndroidInstance:
         self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
         # ToDo prepare topic_template and other variables that should be defined one time.
 
-    @property
+    @cached_property
     def device_position_in_topic(self) -> int:
         """ Position of DEVICE_MACRO in configured MQTT topic """
         result: int = 0
@@ -79,6 +80,7 @@ class SleepAsAndroidInstance:
 
         return s[position]
 
+    @cache
     def device_name_from_topic(self, topic: str) -> str:
         """Get device name from topic
 
@@ -87,7 +89,7 @@ class SleepAsAndroidInstance:
         """
         return self.device_name_from_topic_and_position(topic, self.device_position_in_topic)
 
-    @property
+    @cached_property
     def topic_template(self) -> str:
         """
         Converts topic with {device} to MQTT topic for subscribing
@@ -101,6 +103,7 @@ class SleepAsAndroidInstance:
             pass
         return '/'.join(splitted)
 
+    @cache
     def get_from_config(self, name: str) -> str:
         try:
             data = self._config_entry.options[name]
@@ -114,7 +117,7 @@ class SleepAsAndroidInstance:
         """Name of the integration in Home Assistant."""
         return self._name
 
-    @property
+    @cached_property
     def configured_topic(self) -> str:
         """MQTT topic from integration configuration."""
         _topic = None
@@ -127,6 +130,7 @@ class SleepAsAndroidInstance:
 
         return _topic
 
+    @cache
     def create_entity_id(self, device_name: str) -> str:
         """
         Generates entity_id based on instance name and device name.
@@ -138,6 +142,7 @@ class SleepAsAndroidInstance:
         _LOGGER.debug(f"create_entity_id: my name is {self.name}, device name is {device_name}")
         return self.name + "_" + device_name
 
+    @cache
     def device_name_from_entity_id(self, entity_id: str) -> str:
         """
         Extract device name from entity_id
