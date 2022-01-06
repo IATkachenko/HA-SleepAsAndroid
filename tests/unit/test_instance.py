@@ -3,14 +3,15 @@ import unittest.mock as mock
 from unittest.mock import patch, AsyncMock, MagicMock, PropertyMock
 from homeassistant.helpers import entity_registry
 import aiounittest
-import sys
-import os
+
 import uuid
 
-import sleep_as_android
 
+import sys
+import os
 sys.path.append(os.path.join(sys.path[0], "../../custom_components"))
 
+import sleep_as_android
 from sleep_as_android import SleepAsAndroidInstance
 from sleep_as_android.const import DOMAIN, DEVICE_MACRO
 
