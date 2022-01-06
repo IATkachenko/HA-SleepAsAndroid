@@ -101,16 +101,9 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         try:
             new_state = json.loads(msg.payload)['event']
             if self.state != new_state:
-                # Fire event
-                payload = {"event": new_state}
-                _LOGGER.debug("Firing '%s' with payload: '%s'", self.name, payload)
-                self.hass.bus.fire(self.name, payload)
-                if new_state in TRIGGERS:
-                    # Fire trigger
-                    self.hass.bus.async_fire(DOMAIN + "_event", {"device_id": self.device_id, "type": new_state})
-                else:
-                    _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
-                                    "trigger!", new_state)
+                self._fire_event(new_state)
+                self._fire_trigger(new_state)
+
         except KeyError:
             _LOGGER.warning("Got unexpected payload: '%s'", msg.payload)
         except json.decoder.JSONDecodeError:
@@ -159,3 +152,24 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         info = {"identifiers": {(DOMAIN, self.unique_id)}, "name": self.name, "manufacturer": "SleepAsAndroid",
                 "type": None, "model": "MQTT"}
         return info
+
+    def _fire_event(self, event_payload: str):
+        """Fires event with payload {'event': event_payload }
+
+        :param event_payload: payload for event
+        """
+        payload = {"event": event_payload}
+        _LOGGER.debug("Firing '%s' with payload: '%s'", self.name, payload)
+        self.hass.bus.fire(self.name, payload)
+
+    def _fire_trigger(self, new_state: str):
+        """
+        Fires trigger based on new state
+
+        :param new_state: type of trigger to fire
+        """
+        if new_state in TRIGGERS:
+            self.hass.bus.async_fire(DOMAIN + "_event", {"device_id": self.device_id, "type": new_state})
+        else:
+            _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
+                            "trigger!", new_state)
