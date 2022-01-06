@@ -123,8 +123,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
 
         except json.decoder.JSONDecodeError:
             _LOGGER.warning("expected JSON payload. got '%s' instead", msg.payload)
-            self._state = msg.payload
-            self.async_write_ha_state()
 
     @property
     def should_poll(self):
