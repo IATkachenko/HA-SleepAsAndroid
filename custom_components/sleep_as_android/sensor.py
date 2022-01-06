@@ -9,7 +9,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.core import HomeAssistant
-from homeassistant.const import STATE_UNKNOWN
+from homeassistant.const import STATE_UNKNOWN, STATE_UNAVAILABLE
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 
@@ -17,7 +17,7 @@ from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 from .device_trigger import TRIGGERS
 from .const import DOMAIN
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Union
 if TYPE_CHECKING:
     from . import SleepAsAndroidInstance
 
@@ -51,6 +51,17 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
 
 class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
+    __additional_attributes: dict[str, str] = {
+        'value1': 'timestamp',
+        'value2': 'label',
+    }
+    """Mapping for value*
+
+    It is comfortable to have human readable names. 
+    Keys is field names from SleepAsAndroid event https://docs.sleep.urbandroid.org/services/automation.html#events
+    Values is sensor attributes.
+    """
+
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         self._instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
 
@@ -59,6 +70,8 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self._name: str = name
         self._state: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
+        self._attr_extra_state_attributes = {}
+        self._set_attributes({}) # initiate _attr_extra_state_attributes with empty values
         _LOGGER.debug(f"Creating sensor with name {name}")
 
     async def async_added_to_hass(self):
@@ -92,26 +105,26 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     def process_message(self, msg):
         """
         Process new MQTT messages.
-        Set sensor state and fire events.
+        Set sensor state, attributes and fire events.
 
         :param msg: MQTT message
         """
-        new_state = STATE_UNKNOWN
-
+        _LOGGER.debug(f"Processing message {msg}")
         try:
-            new_state = json.loads(msg.payload)['event']
-            if self.state != new_state:
-                self._fire_event(new_state)
-                self._fire_trigger(new_state)
+            new_state = STATE_UNKNOWN
+            payload = json.loads(msg.payload)
+            try:
+                new_state = payload['event']
+            except KeyError:
+                _LOGGER.warning("Got unexpected payload: '%s'", payload)
 
-        except KeyError:
-            _LOGGER.warning("Got unexpected payload: '%s'", msg.payload)
+            self._set_attributes(payload)
+            self.state = new_state
+
         except json.decoder.JSONDecodeError:
             _LOGGER.warning("expected JSON payload. got '%s' instead", msg.payload)
-            new_state = msg.payload
-
-        self._state = new_state
-        self.async_write_ha_state()
+            self._state = msg.payload
+            self.async_write_ha_state()
 
     @property
     def should_poll(self):
@@ -127,6 +140,23 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     def state(self):
         """Return the state of the entity."""
         return self._state
+
+    @state.setter
+    def state(self, new_state: str):
+        """Set new state and fire events if needed
+
+        Events will be fired if state changed and new state is not STATE_UNKNOWN.
+
+        :param new_state: str: new sensor state
+        """
+        if self._state != new_state:
+            self._state = new_state
+            self.async_write_ha_state()
+            if new_state != STATE_UNKNOWN:
+                self._fire_event(self.state)
+                self._fire_trigger(self.state)
+        else:
+            _LOGGER.debug(f"Will not update state because old state == new_state")
 
     @property
     def unique_id(self) -> str:
@@ -173,3 +203,10 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         else:
             _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
                             "trigger!", new_state)
+
+    def _set_attributes(self, payload: dict):
+        new_attributes = {}
+        for k, v in self.__additional_attributes.items():
+            new_attributes[v] = payload.get(k, STATE_UNAVAILABLE)
+        _LOGGER.debug(f"New attributes is {new_attributes}")
+        return self._attr_extra_state_attributes.update(new_attributes)
