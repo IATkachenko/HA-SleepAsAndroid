@@ -101,10 +101,12 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         try:
             new_state = json.loads(msg.payload)['event']
             if self.state != new_state:
+                # Fire event
                 payload = {"event": new_state}
                 _LOGGER.debug("Firing '%s' with payload: '%s'", self.name, payload)
                 self.hass.bus.fire(self.name, payload)
                 if new_state in TRIGGERS:
+                    # Fire trigger
                     self.hass.bus.async_fire(DOMAIN + "_event", {"device_id": self.device_id, "type": new_state})
                 else:
                     _LOGGER.warning("Got %s event, but it is not in TRIGGERS list: will not fire this event for "
