@@ -90,7 +90,14 @@ If application publishes a new event, then integration fires `<name>` event with
   "event": "<event_name_from_application>"
 }
 ```
+## Attributes
+![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red)
 
+Sensor have additional attributes:
+  * `timestamp` -- value1 from application event. It is usually timestamp of something. Meaning is depended on event. Please check [Sleep As Android events documentation](https://docs.sleep.urbandroid.org/services/automation.html#events) for mor details;
+  * `label` -- value2 from application event. It is usually alarm label. You can use this attribute to tell one alarm from another.
+
+If event have no `value<N>` field, then attribute will be set to `unknown`.
 ## Troubleshooting
 `configuration.yaml`:
 ```yaml
