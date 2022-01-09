@@ -141,7 +141,6 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
         self.assertIsInstance(instance.entity_registry, entity_registry.EntityRegistry)
 
 
-
 class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
     async def test_async_setup(self):
         ret = await sleep_as_android.async_setup(None, None)
