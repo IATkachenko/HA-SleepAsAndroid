@@ -102,12 +102,13 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
             ['foo'],
             ['foo/bar']
         )
-        instance = TestingSleepAsAndroidInstance(None, None, None)
+
         for v in variants:
             with self.subTest(topic=v, expect=v):
+                instance = TestingSleepAsAndroidInstance(None, None, None)
                 mocked_get_from_config.return_value = v
                 self.assertEqual(instance.configured_topic, v)
-
+        instance = TestingSleepAsAndroidInstance(None, None, None)
         mocked_get_from_config.side_effect = side_effect
         self.assertEqual(instance.configured_topic, 'SleepAsAndroid/' + DEVICE_MACRO)
 
