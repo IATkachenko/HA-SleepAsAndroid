@@ -88,8 +88,9 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
             [topic, 2, 'baz'],
             [topic, 8, 'moo']
         )
-        instance = TestingSleepAsAndroidInstance(None, None, None)
+
         for t, position, expect in variants:
+            instance = TestingSleepAsAndroidInstance(None, None, None)
             mocked_device_position_in_topic.return_value = position
             self.assertEqual(instance.device_name_from_topic(t), expect)
 
