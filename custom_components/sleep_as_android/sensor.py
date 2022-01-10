@@ -120,6 +120,8 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
 
             self._set_attributes(payload)
             self.state = new_state
+            self._fire_event(self.state)
+            self._fire_trigger(self.state)
 
         except json.decoder.JSONDecodeError:
             _LOGGER.warning("expected JSON payload. got '%s' instead", msg.payload)
@@ -150,9 +152,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         if self._state != new_state:
             self._state = new_state
             self.async_write_ha_state()
-            if new_state != STATE_UNKNOWN:
-                self._fire_event(self.state)
-                self._fire_trigger(self.state)
         else:
             _LOGGER.debug(f"Will not update state because old state == new_state")
 
