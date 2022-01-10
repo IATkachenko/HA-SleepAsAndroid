@@ -75,6 +75,8 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
 ### on device event
  1. select `Device` in automatization trigger and use `SleepAsAndroid` device;
  1. select trigger from a list.
+
+![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red) events will be fired up for every MQTT message  
  
 ### on sensor state change
 `<name>` is an integration name in lower case without spaces from the `Settings` dialog.
@@ -90,6 +92,7 @@ If application publishes a new event, then integration fires `<name>` event with
   "event": "<event_name_from_application>"
 }
 ```
+![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red) events will be fired up for every MQTT message
 ## Attributes
 ![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red)
 
