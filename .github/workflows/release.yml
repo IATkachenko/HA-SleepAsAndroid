@@ -2,14 +2,32 @@
 name: Create release
 
 on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch for release'
+        required: true
+        default: 'dev'
   push:
     branches:
       - main
 
 jobs:
+  prepare:
+    name: "Determinate branch based on event"
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{steps.get_branch.output.branch}}
+    steps:
+      - name: get_branch
+        run: |
+          branch=`[ "${{ github.event_name }}" == "push" ] && echo "main" || echo "${{ github.event.inputs.branch }}"`
+          echo "::set-output name=branch::$(echo branch)"
+
   changes:
     name: "Create changelog and tag"
     runs-on: ubuntu-latest
+    needs: prepare
     outputs:
       skipped: ${{ steps.changelog.outputs.skipped }}
       clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}

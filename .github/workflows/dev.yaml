@@ -1,0 +1,77 @@
+name: Create dev release
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch for release'
+        required: true
+        default: 'dev'
+
+jobs:
+  release:
+    name: "Create release"
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "Check out repository"
+      uses: actions/checkout@v2
+      with:
+          ref: ${{  github.event.inputs.branch }}
+          fetch-depth: 0
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: "Install standard-version"
+      run: npm i standard-version
+
+    - name: "Get next tag"
+      run: echo "next_tag=$(npx standard-version --skip.commit --git-tag-fallback --skip.changelog  --prerelease "b" --dry-run | grep "tagging release" | awk '{print $NF}')" >> $GITHUB_ENV
+
+    - name: "Set package"
+      working-directory: ./custom_components
+      run: echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
+
+    - name: "Set variables"
+      working-directory: ./custom_components
+      run: |
+        echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+        echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+
+    - name: "Prepare"
+      run: |
+        echo "NEW_VERSION=${{ env.next_tag }}" | sed -e 's/=v/=/' >> $GITHUB_ENV
+        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+        git config user.name "GitHub Actions Bot"
+        git config user.email "github-actions@no_spam.please"
+
+    - name: "Update version file"
+      run: sed -e "s/%%%VERSION%%%/${{ env.NEW_VERSION }}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
+
+    - name: "Zip component dir"
+      working-directory: ./custom_components/${{ env.package }}
+      run: |
+        rm -f manifest.json.tpl
+        zip ${{ env.archive }} -r ./
+
+    - name: "Prepare release body"
+      run: |
+        git tag -l --no-merged main | xargs git tag -d
+        npx standard-version --skip.commit --git-tag-fallback --header "" --skip.tag
+        sed --in-place 1,4d CHANGELOG.md
+        cat CHANGELOG.md ./docs/feedback.md > release_body.md
+
+    - name: "Tag"
+      run: |
+        git tag $next_tag
+        git push --tags
+
+    - name: "Create release"
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.next_tag }}
+        name: ${{ env.next_tag }}
+        files: ${{ env.basedir }}/${{ env.archive }}
+        prerelease: true
+        body_path: release_body.md
