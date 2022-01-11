@@ -40,7 +40,7 @@ jobs:
 
     - name: "Clean dev tags"
       run: git tag -l --no-merged main | xargs git tag -d
-      
+
     - name: Conventional Changelog Action
       id: changelog
       uses: TriPSs/conventional-changelog-action@v3
@@ -76,9 +76,8 @@ jobs:
 
       - name: Commit version
         id: commit_version
-        # No type: it may be "feat" or "fix" version changes, and we don't know what exact we should use
         run: |
-          git commit -m "version update" custom_components/sleep_as_android/manifest.json
+          git commit -m "chore(release): ${{ env.NEW_VERSION }}" custom_components/sleep_as_android/manifest.json
           
       - name: Update blueprint
         id: update_blueprint
@@ -90,9 +89,8 @@ jobs:
       - name: Commit bluepint
         id: commit_blueprint
         # We may skip this if blueprint was not updated
-        # No type: it may be "feat" or "fix" version changes, and we don't know what exact we should use
         run: |
-           git commit -m "blueprint update" blueprint.yaml || true
+           git commit -m "chore(release): blueprint update for ${{ env.NEW_VERSION }}" blueprint.yaml || true
 
       - name: Update
         id: update_tag
