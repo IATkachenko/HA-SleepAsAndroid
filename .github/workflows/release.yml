@@ -38,6 +38,9 @@ jobs:
       uses: actions/checkout@v2
       id: checkout
 
+    - name: "Clean dev tags"
+      run: git tag -l --no-merged main | xargs git tag -d
+      
     - name: Conventional Changelog Action
       id: changelog
       uses: TriPSs/conventional-changelog-action@v3
