@@ -19,13 +19,19 @@ def single_quote_dump(raw_str):
     return changed_yaml.load(raw_str)
 
 
-def main():
+class OutputMapping(Enum):
+    full = "full.yaml"
+
+
+def main(workdir: str, bp_type: str):
+    file_name = OutputMapping[bp_type].value
+    file = f"{workdir}/{file_name}"
     blueprint = {
         "blueprint": {
             "name": "Sleep as Android MQTT actions",
             "description": "Define actions based on Sleep As Android sensor states",
             "domain": "automation",
-            "source_url": "https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint.yaml",
+            "source_url": f"https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint/{file_name}",
             "input": {
                 "device": {
                     "name": "SleepAsAndroid device",
@@ -94,9 +100,9 @@ def main():
     string_stream.close()
     print(output_str.replace('"', "'"))
 
-    with open("blueprint.yaml", "w") as outfile:
+    with open(file, "w") as outfile:
         yaml.dump(blueprint, outfile)
 
 
 if __name__ == "__main__":
-    main()
+    main(workdir=os.path.dirname(sys.argv[0]), bp_type="full")
