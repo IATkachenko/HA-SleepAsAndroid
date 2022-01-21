@@ -1,16 +1,14 @@
 from io import StringIO
-
+from enum import Enum
+import os
+import sys
 import ruamel.yaml
 
 from custom_components.sleep_as_android.device_trigger import DOMAIN, TRIGGERS
 
-yaml = ruamel.yaml.YAML()
-
-yaml.preserve_quotes = True
-
-
-def tagged_empty_scalar(tag, value):
-    return yaml.load("!" + tag + " " + value)
+from __init__ import yaml, tagged_empty_scalar
+from inputs import Input, InputMapping
+from conditions import Condition, ConditionMapping
 
 
 def single_quote_dump(raw_str):
@@ -23,6 +21,10 @@ class OutputMapping(Enum):
     full = "full.yaml"
 
 
+class Triggers(Enum):
+    full = TRIGGERS
+
+
 def main(workdir: str, bp_type: str):
     file_name = OutputMapping[bp_type].value
     file = f"{workdir}/{file_name}"
@@ -32,42 +34,23 @@ def main(workdir: str, bp_type: str):
             "description": "Define actions based on Sleep As Android sensor states",
             "domain": "automation",
             "source_url": f"https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint/{file_name}",
-            "input": {
-                "device": {
-                    "name": "SleepAsAndroid device",
-                    "description": "Device for Sleep as Android ",
-                    "selector": {
-                        "device": {
-                            "integration": f"{DOMAIN}",
-                        }
-                    },
-                },
-                "person": {
-                    "name": "Person",
-                    "description": "Person for checking state",
-                    "selector": {"entity": {"domain": "person"}},
-                },
-                "state": {
-                    "name": "State",
-                    "description": "Person must be in this state",
-                    "default": "home",
-                },
-            },
+            "input": {},
         },
         "mode": "queued",
         "max_exceeded": "silent",
         "trigger": [],
-        "condition": [
-            {
-                "condition": "state",
-                "entity_id": tagged_empty_scalar("input", "person"),
-                "state": tagged_empty_scalar("input", "state"),
-            }
-        ],
-        "action": [{"choose": []}],
+        "condition": [],
+        "action": [{
+                "choose": []
+        }]
     }
+    for c in ConditionMapping[bp_type].value:
+        blueprint["condition"].append(Condition.get(c))
 
-    for t in TRIGGERS:
+    for i in InputMapping[bp_type].value:
+        blueprint["blueprint"]["input"][i] = Input.get(i)
+
+    for t in Triggers[bp_type].value:
         blueprint["blueprint"]["input"][t] = {
             "name": t,
             "description": f"{t} event",
