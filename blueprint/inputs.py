@@ -26,9 +26,24 @@ Input = {
         "name": "State",
         "description": "Person must be in this state",
         "default": "home"
+    },
+    'sensor': {
+        "name": "Sensor",
+        "description": "Sensor for getting label attribute",
+        "selector": {
+            "entity": {
+                "integration": DOMAIN,
+                "domain": "sensor"
+            }
+        }
+    },
+    'label': {
+        "name": "Label",
+        "description": "Sensor must have this label attribute",
     }
 }
 
 
 class InputMapping(Enum):
     full = ["device", "person", "state"]
+    labeled = ["device", "person", "state", "sensor", "label"]

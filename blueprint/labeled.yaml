@@ -1,0 +1,120 @@
+blueprint:
+  name: Sleep as Android MQTT actions
+  description: Define actions based on Sleep As Android sensor states
+  domain: automation
+  source_url: https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint/labeled.yaml
+  input:
+    device:
+      name: SleepAsAndroid device
+      description: 'Device for Sleep as Android '
+      selector:
+        device:
+          integration: sleep_as_android
+    person:
+      name: Person
+      description: Person for checking state
+      selector:
+        entity:
+          domain: person
+    state:
+      name: State
+      description: Person must be in this state
+      default: home
+    sensor:
+      name: Sensor
+      description: Sensor for getting label attribute
+      selector:
+        entity:
+          integration: sleep_as_android
+          domain: sensor
+    label:
+      name: Label
+      description: Sensor must have this label attribute
+    alarm_snooze_clicked:
+      name: alarm_snooze_clicked
+      description: alarm_snooze_clicked event
+      default: []
+      selector:
+        action: {}
+    alarm_snooze_canceled:
+      name: alarm_snooze_canceled
+      description: alarm_snooze_canceled event
+      default: []
+      selector:
+        action: {}
+    alarm_alert_start:
+      name: alarm_alert_start
+      description: alarm_alert_start event
+      default: []
+      selector:
+        action: {}
+    alarm_alert_dismiss:
+      name: alarm_alert_dismiss
+      description: alarm_alert_dismiss event
+      default: []
+      selector:
+        action: {}
+    alarm_skip_next:
+      name: alarm_skip_next
+      description: alarm_skip_next event
+      default: []
+      selector:
+        action: {}
+mode: queued
+max_exceeded: silent
+trigger:
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: alarm_snooze_clicked
+  id: alarm_snooze_clicked
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: alarm_snooze_canceled
+  id: alarm_snooze_canceled
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: alarm_alert_start
+  id: alarm_alert_start
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: alarm_alert_dismiss
+  id: alarm_alert_dismiss
+- platform: device
+  domain: sleep_as_android
+  device_id: !input 'device'
+  type: alarm_skip_next
+  id: alarm_skip_next
+condition:
+- condition: state
+  entity_id: !input person
+  state: !input state
+- condition: state
+  entity_id: !input sensor
+  attribute: label
+  state: !input label
+action:
+- choose:
+  - conditions:
+      condition: trigger
+      id: alarm_snooze_clicked
+    sequence: !input 'alarm_snooze_clicked'
+  - conditions:
+      condition: trigger
+      id: alarm_snooze_canceled
+    sequence: !input 'alarm_snooze_canceled'
+  - conditions:
+      condition: trigger
+      id: alarm_alert_start
+    sequence: !input 'alarm_alert_start'
+  - conditions:
+      condition: trigger
+      id: alarm_alert_dismiss
+    sequence: !input 'alarm_alert_dismiss'
+  - conditions:
+      condition: trigger
+      id: alarm_skip_next
+    sequence: !input 'alarm_skip_next'

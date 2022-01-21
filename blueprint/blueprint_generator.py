@@ -19,10 +19,18 @@ def single_quote_dump(raw_str):
 
 class OutputMapping(Enum):
     full = "full.yaml"
+    labeled = "labeled.yaml"
 
 
 class Triggers(Enum):
     full = TRIGGERS
+    labeled = [
+        "alarm_snooze_clicked",
+        "alarm_snooze_canceled",
+        "alarm_alert_start",
+        "alarm_alert_dismiss",
+        "alarm_skip_next",
+    ]  # Triggers that have label
 
 
 def main(workdir: str, bp_type: str):
