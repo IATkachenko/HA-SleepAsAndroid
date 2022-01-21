@@ -88,4 +88,5 @@ def main(workdir: str, bp_type: str):
 
 
 if __name__ == "__main__":
-    main(workdir=os.path.dirname(sys.argv[0]), bp_type="full")
+    for t in Triggers:
+        main(workdir=os.path.dirname(sys.argv[0]), bp_type=t.name)
