@@ -31,7 +31,7 @@ You will need:
  * press `Install` button _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
  * restart **Home Assistant** 
  * go to **Home Assistant** `Settings` -> `Integrations` -> `Add Integration` (right bottom conner)
- * type `Sleep As Android` in search field and click at integration name
+ * type `Sleep As Android` in search field and click at integration name. [Clean browser cache if nothing found](https://github.com/IATkachenko/HA-SleepAsAndroid/issues/29).
 
 ### Configuration 
 #### Component configuration
