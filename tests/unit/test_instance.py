@@ -1,19 +1,13 @@
-import unittest
+import pytest
 import unittest.mock as mock
 from unittest.mock import patch, AsyncMock, MagicMock, PropertyMock
 from homeassistant.helpers import entity_registry
-import aiounittest
 
 import uuid
 
-
-import sys
-import os
-sys.path.append(os.path.join(sys.path[0], "../../custom_components"))
-
-import sleep_as_android
-from sleep_as_android import SleepAsAndroidInstance
-from sleep_as_android.const import DOMAIN, DEVICE_MACRO
+import custom_components.sleep_as_android
+from custom_components.sleep_as_android import SleepAsAndroidInstance
+from custom_components.sleep_as_android.const import DOMAIN, DEVICE_MACRO
 
 SleepAsAndroidInstance_cache = SleepAsAndroidInstance
 hass = MagicMock()
@@ -21,46 +15,42 @@ config_entry = MagicMock()
 hass.data = {}
 
 
+@pytest.mark.skip
 class TestingSleepAsAndroidInstance(SleepAsAndroidInstance):
     def __init__(self, hass=None, config_entry=None, registry=None):
         pass
 
 
-class SleepAsAndroidInstanceTests(unittest.TestCase):
-    def test_device_name_from_topic_and_position(self):
-        topic = 'foo/bar/baz/moo'
-        variants = (
-            ['test', 1, 'test'],
-            [topic, 2, 'baz'],
-            [topic, 8, 'moo']
-        )
-        for t, position, expect in variants:
-            self.assertEqual(
-                SleepAsAndroidInstance.device_name_from_topic_and_position(t, position),
-                expect
-            )
+class TestSleepAsAndroidInstance:
+
+    @pytest.mark.parametrize(
+        "t, position, expect", [
+            ('test', 1, 'test'),
+            ("foo/bar/baz/moo", 2, 'baz'),
+            ("foo/bar/baz/moo", 8, 'moo'),
+        ])
+    def test_device_name_from_topic_and_position(self, t, position, expect):
+        assert SleepAsAndroidInstance.device_name_from_topic_and_position(t, position) == expect
 
     def test_device_position_in_topic(self):
         with patch(__name__+'.TestingSleepAsAndroidInstance.configured_topic', new_callable=mock.PropertyMock ) as mock_configured_topic:
             mock_configured_topic.return_value = 'SleepAsAndroid/%%%device%%%'
             instance = TestingSleepAsAndroidInstance(hass=None, config_entry=None, registry=None)
-            self.assertEqual(instance.device_position_in_topic, 1)
+            assert instance.device_position_in_topic == 1
 
-    @patch(__name__+".SleepAsAndroidInstance.configured_topic", new_callable=PropertyMock)
-    @patch(__name__+".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
-    def test_topic_template(self, mocked_device_position_in_topic, mocked_configured_topic):
-        variants = (
-            ['foo/bar', 2, 'foo/bar'],
-            ['baz/%%%device%%%', 1, 'baz/+'],
-            ['foo/%%%device%%%/bar', 1, 'foo/+/bar'],
-            ['foo/%%%device%%%baz/bar', 3, 'foo/%%%device%%%baz/bar'],
-        )
-        for template, position, expect in variants:
-            with self.subTest(template=template, position=position, expect=expect):
-                mocked_device_position_in_topic.return_value = position
-                mocked_configured_topic.return_value = template
-                instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
-                self.assertEqual(instance.topic_template, expect)
+    @pytest.mark.parametrize("template, position, expect", [
+        ('foo/bar', 2, 'foo/bar'),
+        ('baz/%%%device%%%', 1, 'baz/+'),
+        ('foo/%%%device%%%/bar', 1, 'foo/+/bar'),
+        ('foo/%%%device%%%baz/bar', 3, 'foo/%%%device%%%baz/bar'),
+    ])
+    @patch(__name__ + ".SleepAsAndroidInstance.configured_topic", new_callable=PropertyMock)
+    @patch(__name__ + ".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
+    def test_topic_template(self, mocked_device_position_in_topic, mocked_configured_topic, template, position, expect, ):
+        mocked_device_position_in_topic.return_value = position
+        mocked_configured_topic.return_value = template
+        instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
+        assert instance.topic_template == expect
 
     def test_name(self):
         name = uuid.uuid4()
@@ -71,80 +61,72 @@ class SleepAsAndroidInstanceTests(unittest.TestCase):
                 'topic_template': uuid.uuid4(),
             })
         instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
-        self.assertEqual(instance.name, name)
+        assert instance.name == name
 
         #  check default name
         type(config_entry).options = PropertyMock(return_value={})
         type(config_entry).data = PropertyMock(return_value={})
 
         instance = SleepAsAndroidInstance(hass=hass, config_entry=config_entry, registry=None)
-        self.assertEqual(instance.name, 'SleepAsAndroid')
+        assert instance.name == 'SleepAsAndroid'
 
-    @patch(__name__+".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
-    def test_device_name_from_topic(self, mocked_device_position_in_topic):
-        topic = 'foo/bar/baz/moo'
-        variants = (
-            ['test', 1, 'test'],
-            [topic, 2, 'baz'],
-            [topic, 8, 'moo']
-        )
+    @pytest.mark.parametrize("t, position, expect", [
+        ('test', 1, 'test'),
+        ("foo/bar/baz/moo", 2, 'baz'),
+        ("foo/bar/baz/moo", 8, 'moo'),
+    ])
+    @patch(__name__ + ".SleepAsAndroidInstance.device_position_in_topic", new_callable=PropertyMock)
+    def test_device_name_from_topic(self, mocked_device_position_in_topic, t, position, expect,):
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        mocked_device_position_in_topic.return_value = position
+        assert instance.device_name_from_topic(t) == expect
 
-        for t, position, expect in variants:
-            instance = TestingSleepAsAndroidInstance(None, None, None)
-            mocked_device_position_in_topic.return_value = position
-            self.assertEqual(instance.device_name_from_topic(t), expect)
+    @pytest.mark.parametrize("v", [
+        'foo',
+        'foo/bar',
+    ])
+    @patch(__name__ + ".SleepAsAndroidInstance.get_from_config")
+    def test_configured_topic(self, mocked_get_from_config, v):
+        instance = TestingSleepAsAndroidInstance(None, None, None)
+        mocked_get_from_config.return_value = v
+        assert instance.configured_topic == v
 
-    @patch(__name__+".SleepAsAndroidInstance.get_from_config")
-    def test_configured_topic(self, mocked_get_from_config):
+    @patch(__name__ + ".SleepAsAndroidInstance.get_from_config")
+    def test_with_exception(self, mocked_get_from_config):
         def side_effect(_arg):
             raise KeyError
 
-        variants = (
-            ['foo'],
-            ['foo/bar']
-        )
-
-        for v in variants:
-            with self.subTest(topic=v, expect=v):
-                instance = TestingSleepAsAndroidInstance(None, None, None)
-                mocked_get_from_config.return_value = v
-                self.assertEqual(instance.configured_topic, v)
         instance = TestingSleepAsAndroidInstance(None, None, None)
         mocked_get_from_config.side_effect = side_effect
-        self.assertEqual(instance.configured_topic, 'SleepAsAndroid/' + DEVICE_MACRO)
+        assert instance.configured_topic == 'SleepAsAndroid/' + DEVICE_MACRO
 
+    @pytest.mark.parametrize("name, device_name, e", [
+        ('foo', 'bar', 'foo_bar'),
+    ])
     @patch(__name__+".SleepAsAndroidInstance.name", new_callable=PropertyMock)
-    def test_create_entity_id(self, mocked_name):
-        variants = (
-            [ 'foo', 'bar', 'foo_bar' ],
-        )
+    def test_create_entity_id(self, mocked_name, name, device_name, e):
         instance = TestingSleepAsAndroidInstance(None, None, None)
-        for name, device_name, e in variants:
-            with self.subTest(name=name, device_name=device_name, expect=e):
-                mocked_name.return_value = name
-                self.assertEqual(instance.create_entity_id(device_name), e)
+        mocked_name.return_value = name
+        assert instance.create_entity_id(device_name) == e
 
+    @pytest.mark.parametrize("name, entity_id, e", [
+        ('foo', 'foo_bar', 'bar'),
+    ])
     @patch(__name__ + ".SleepAsAndroidInstance.name", new_callable=PropertyMock)
-    def test_device_name_from_entity_id(self, mocked_name):
-        variants = (
-            ['foo', 'foo_bar', 'bar'],
-        )
+    def test_device_name_from_entity_id(self, mocked_name, name, entity_id, e):
         instance = TestingSleepAsAndroidInstance(None, None, None)
-        for name, entity_id, e in variants:
-            with self.subTest(name=name, entity_id=entity_id, expect=e):
-                mocked_name.return_value = name
-                self.assertEqual(instance.device_name_from_entity_id(entity_id), e)
+        mocked_name.return_value = name
+        assert instance.device_name_from_entity_id(entity_id) == e
 
     @patch('homeassistant.helpers.entity_registry.async_get_registry', spec=entity_registry.EntityRegistry)
     def test_entity_registry(self, mocked_entity_registry):
         instance = SleepAsAndroidInstance(hass, config_entry, mocked_entity_registry)
-        self.assertIsInstance(instance.entity_registry, entity_registry.EntityRegistry)
+        assert isinstance(instance.entity_registry, entity_registry.EntityRegistry) is True
 
 
-class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
+class TestAsyncSleepAsAndroidInstance:
     async def test_async_setup(self):
-        ret = await sleep_as_android.async_setup(None, None)
-        self.assertTrue(ret)
+        assert await custom_components.sleep_as_android.async_setup(None, None) is True
 
     @patch('homeassistant.helpers.entity_registry.async_get_registry')
     @patch(__name__ + '.SleepAsAndroidInstance', spec=SleepAsAndroidInstance)
@@ -152,11 +134,7 @@ class AsyncSleepAsAndroidInstanceTests(aiounittest.AsyncTestCase):
         mocked_entry_id = PropertyMock(return_value=uuid.uuid4())
         type(config_entry).entry_id = mocked_entry_id
 
-        ret = await sleep_as_android.async_setup_entry(hass, config_entry)
+        ret = await custom_components.sleep_as_android.async_setup_entry(hass, config_entry)
 
-        self.assertIsInstance(hass.data[DOMAIN][config_entry.entry_id], SleepAsAndroidInstance_cache)
-        self.assertTrue(ret)
-
-
-if __name__ == '__main__':
-    unittest.main(verbosity=3)
+        assert isinstance(hass.data[DOMAIN][config_entry.entry_id], SleepAsAndroidInstance_cache) is True
+        assert ret is True
