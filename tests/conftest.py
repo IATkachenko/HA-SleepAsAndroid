@@ -1,8 +1,8 @@
 """template conftest."""
-from homeassistant.setup import async_setup_component
+from unittest.mock import patch, AsyncMock
+
 import pytest
 from pytest_homeassistant_custom_component.common import (
-    assert_setup_component,
     async_mock_service,
 )
 
@@ -22,21 +22,15 @@ def calls(hass):
 
 
 @pytest.fixture
-async def start_ha(hass, domains, config, caplog):
-    """Do setup of integration."""
-    for domain, count in domains:
-        with assert_setup_component(count, domain):
-            assert await async_setup_component(
-                hass,
-                domain,
-                config,
-            )
-        await hass.async_block_till_done()
-    await hass.async_start()
-    await hass.async_block_till_done()
-
-
-@pytest.fixture
 async def caplog_setup_text(caplog):
     """Return setup log of integration."""
     yield caplog.text
+
+
+@pytest.fixture
+def mock_mqtt():
+    """Make sure connection is established."""
+    with patch("homeassistant.components.mqtt.MQTT") as mock_mqtt:
+        mock_mqtt.return_value.async_connect = AsyncMock(return_value=True)
+        mock_mqtt.return_value.async_disconnect = AsyncMock(return_value=True)
+        yield mock_mqtt
