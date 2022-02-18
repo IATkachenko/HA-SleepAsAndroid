@@ -5,6 +5,7 @@ from functools import cached_property, cache
 from typing import Dict, Callable
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.helpers import entity_registry as er
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.components.mqtt import subscription
@@ -28,7 +29,24 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
 
     registry = await er.async_get_registry(hass)
     hass.data[DOMAIN][config_entry.entry_id] = SleepAsAndroidInstance(hass, config_entry, registry)
+
+    hass.config_entries.async_setup_platforms(config_entry, [Platform.SENSOR])
+    config_entry.async_on_unload(config_entry.add_update_listener(async_update_options))
     return True
+
+
+async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update options for entry that was configured via user interface."""
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Remove entry configured via user interface."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, [Platform.SENSOR])
+    if unload_ok:
+        instance: SleepAsAndroidInstance = hass.data[DOMAIN].pop(entry.entry_id)
+        await instance.unsubscribe()
+    return unload_ok
 
 
 class SleepAsAndroidInstance:
@@ -44,9 +62,16 @@ class SleepAsAndroidInstance:
         except KeyError:
             self._name = 'SleepAsAndroid'
 
-        # will call async_setup_entry from sensor.py
-        self.hass.loop.create_task(self.hass.config_entries.async_forward_entry_setup(self._config_entry, 'sensor'))
         # ToDo prepare topic_template and other variables that should be defined one time.
+
+    async def unsubscribe(self):
+        _LOGGER.debug(f"subscription state is {self._subscription_state}")
+        if self._subscription_state is not None:
+            _LOGGER.debug("Unsubscribing")
+            self._subscription_state = await subscription.async_unsubscribe_topics(
+                hass=self.hass,
+                sub_state=self._subscription_state,
+            )
 
     @cached_property
     def device_position_in_topic(self) -> int:
