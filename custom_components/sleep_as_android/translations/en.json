@@ -14,7 +14,7 @@
   },
   "options": {
     "step": {
-      "user": {
+      "init": {
         "title": "Sleep As Android integration",
         "data": {
           "name": "Name for sensor and events",
