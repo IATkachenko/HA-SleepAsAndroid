@@ -14,7 +14,7 @@
   },
   "options": {
     "step": {
-      "user": {
+      "init": {
         "title": "Integracja Sleep As Android",
         "data": {
           "name": "Nazwa dla sensorów i zdarzeń",
