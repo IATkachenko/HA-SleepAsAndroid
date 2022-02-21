@@ -1,6 +1,6 @@
 {
    "state": {
-     "sleep_as_android_status": {
+     "sleep_as_android__status": {
        "unknown": "Nieznany",
        "sleep_tracking_started": "Rozpoczęto śledzenie snu",
        "sleep_tracking_stopped": "Śledzenie snu zostało zakończone",
