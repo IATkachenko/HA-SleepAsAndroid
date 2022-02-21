@@ -63,6 +63,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     """
     _attr_icon = "mdi:sleep"
     _attr_should_poll = False
+    _attr_device_class = f"{DOMAIN}__status"
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         self._instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
