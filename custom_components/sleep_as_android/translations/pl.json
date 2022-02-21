@@ -1,0 +1,27 @@
+{
+  "title": "Sleep As Android",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Konfiguracja Sleep As Android",
+        "data": {
+          "name": "Nazwa dla sensorów i zdarzeń",
+          "topic_template": "Temat MQTT z wydarzeniami Sleep As Android",
+          "qos": "Jakość usług dla MQTT (QoS)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "title": "Integracja Sleep As Android",
+        "data": {
+          "name": "Nazwa dla sensorów i zdarzeń",
+          "topic_template": "Temat MQTT z wydarzeniami Sleep As Android",
+          "qos": "Jakość usług dla MQTT (QoS)"
+        }
+      }
+    }
+  }
+}
