@@ -1,6 +1,7 @@
 ![version_badge](https://img.shields.io/badge/minimum%20HA%20version-2021.7-red)
 ![Validate with hassfest](https://github.com/IATkachenko/HA-SleepAsAndroid/workflows/Validate%20with%20hassfest/badge.svg) 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs) 
+[![usage_badge](https://img.shields.io/badge/dynamic/json?style=default&label=Usage&query=sleep_as_android.total&url=https%3A%2F%2Fanalytics.home-assistant.io%2Fcustom_integrations.json)](https://analytics.home-assistant.io) 
 [![Custom badge](https://img.shields.io/endpoint?color=orange&label=patreon&url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%2F%3Fusername%3DIATkachenko%26type%3Dpatrons)](https://www.patreon.com/IATkachenko)
 
 # Sleep As Android custom integration
