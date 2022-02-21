@@ -1,0 +1,27 @@
+{
+  "title": "Интеграция Sleep As Android",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Конфигурация для Sleep As Android",
+        "data": {
+          "name": "Имя сенсора и генерируемых событий",
+          "topic_template": "Раздел на MQTT-сервере с сообщениями от приложения",
+          "qos": "Качество обслуживания (QOS) MQTT"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Конфигурация для Sleep As Android",
+        "data": {
+          "name": "Имя сенсора и генерируемых событий",
+          "topic_template": "Раздел на MQTT-сервере с сообщениями от приложения",
+          "qos": "Качество обслуживания (QOS) MQTT"
+        }
+      }
+    }
+  }
+}
