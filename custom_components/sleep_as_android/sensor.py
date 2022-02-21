@@ -73,7 +73,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self._state: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
         self._attr_extra_state_attributes = {}
-        self._set_attributes({}) # initiate _attr_extra_state_attributes with empty values
+        self._set_attributes({})  # initiate _attr_extra_state_attributes with empty values
         _LOGGER.debug(f"Creating sensor with name {name}")
 
     async def async_added_to_hass(self):
