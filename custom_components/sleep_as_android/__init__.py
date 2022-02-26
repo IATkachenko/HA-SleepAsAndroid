@@ -205,7 +205,7 @@ class SleepAsAndroidInstance:
                 # ToDo:  async_write_ha_state() runs before async_add_entities, so entity have no entity_id yet
                 pass
 
-        self._subscription_state = await subscription.async_subscribe_topics(
+        self._subscription_state = subscription.async_prepare_subscribe_topics(
             self.hass,
             self._subscription_state,
             {
@@ -217,6 +217,10 @@ class SleepAsAndroidInstance:
             }
         )
         if self._subscription_state is not None:
+            await subscription.async_subscribe_topics(
+                hass=self.hass,
+                sub_state=self._subscription_state,
+            )
             _LOGGER.debug("Subscribing to root topic is done!")
         else:
             _LOGGER.critical(f"Could not subscribe to topic {self.topic_template}")
