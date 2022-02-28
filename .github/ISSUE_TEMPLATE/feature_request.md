@@ -9,7 +9,7 @@ assignees: ''
 # General information
 <!--
 Describe here your idea in common words.
-What kind of additional functional do you need from intergration?
+What kind of additional functional do you need from integration?
 -->
 # Usage scenario
 <!--
