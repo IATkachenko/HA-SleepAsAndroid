@@ -107,8 +107,7 @@ class SleepAsAndroidInstance:
 
         :returns: device name
         """
-        result: str = "unknown_device"
-        s = topic.split('/')
+        s = topic.split("/")
         if position >= len(s):
             # If we have no DEVICE_MACRO in configured_topic,
             # then device_position_in_topic is greater than topic length and we should use

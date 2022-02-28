@@ -53,8 +53,6 @@ TRIGGER_SCHEMA = HA_TRIGGER_BASE_SCHEMA.extend(
 
 async def async_get_triggers(hass, device_id):
     """Return a list of triggers."""
-    device_registry = await hass.helpers.device_registry.async_get_registry()
-    device = device_registry.async_get(device_id)
 
     triggers = []
 
