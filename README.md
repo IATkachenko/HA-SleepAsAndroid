@@ -52,7 +52,7 @@ To configure `Sleep As Android` for working with this integration:
  Then:
  * Enable it
  * `URL` is a URL for your MQTT server. It should look like `tcp://mqtt_user:mqtt_password@mqtt_host:mqtt_port`
- * `Topic` is a topic name where the application will publish events. See `Topic template` section of component configuration for details. Application settings **MUST NOT** have `%%%device%%%` macro. Use desired device name at postion of `%%%device%%%` of integration configuration. Examples related to integration configuration above: **SleepAsAndroid/igor** or **devices/igor/SleepAsAndroidData**. Device name will be "igor" in both cases.
+ * `Topic` is a topic name where the application will publish events. See `Topic template` section of component configuration for details. Application settings **MUST NOT** have `%%%device%%%` macro. Use desired device name at position of `%%%device%%%` of integration configuration. Examples related to integration configuration above: **SleepAsAndroid/igor** or **devices/igor/SleepAsAndroidData**. Device name will be "igor" in both cases.
  * `Client ID` is any ID. It is not used by integration and is not published to MQTT (now).
 
 ![SleepAsAndroid configuration](./docs/images/SleepAsAndroidSetup.png)
@@ -97,7 +97,7 @@ If application publishes a new event, then integration fires `<name>` event with
 ![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red)
 
 Sensor have additional attributes:
-  * `timestamp` -- value1 from application event. It is usually timestamp of something. Meaning is depended on event. Please check [Sleep As Android events documentation](https://docs.sleep.urbandroid.org/services/automation.html#events) for mor details;
+  * `timestamp` -- value1 from application event. It is usually timestamp of something. Meaning is depended on event. Please check [Sleep As Android events documentation](https://docs.sleep.urbandroid.org/services/automation.html#events) for more details;
   * `label` -- value2 from application event. It is usually alarm label. You can use this attribute to tell one alarm from another.
 
 If event have no `value<N>` field, then attribute will be set to `unknown`.
