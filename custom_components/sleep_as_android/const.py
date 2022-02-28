@@ -1,3 +1,5 @@
+"""Consts for the integration."""
+
 DOMAIN = "sleep_as_android"
 DEVICE_MACRO: str = "%%%device%%%"
 

@@ -1,8 +1,8 @@
-
 from io import StringIO
 
-from custom_components.sleep_as_android.device_trigger import TRIGGERS, DOMAIN
 import ruamel.yaml
+
+from custom_components.sleep_as_android.device_trigger import DOMAIN, TRIGGERS
 
 yaml = ruamel.yaml.YAML()
 
@@ -10,7 +10,7 @@ yaml.preserve_quotes = True
 
 
 def tagged_empty_scalar(tag, value):
-    return yaml.load('!' + tag + " " + value)
+    return yaml.load("!" + tag + " " + value)
 
 
 def single_quote_dump(raw_str):
@@ -34,21 +34,17 @@ def main():
                         "device": {
                             "integration": f"{DOMAIN}",
                         }
-                    }
+                    },
                 },
                 "person": {
                     "name": "Person",
                     "description": "Person for checking state",
-                    "selector": {
-                        "entity": {
-                            "domain": "person"
-                        }
-                    }
+                    "selector": {"entity": {"domain": "person"}},
                 },
                 "state": {
                     "name": "State",
                     "description": "Person must be in this state",
-                    "default": "home"
+                    "default": "home",
                 },
             },
         },
@@ -59,12 +55,10 @@ def main():
             {
                 "condition": "state",
                 "entity_id": tagged_empty_scalar("input", "person"),
-                "state": tagged_empty_scalar("input", "state")
+                "state": tagged_empty_scalar("input", "state"),
             }
         ],
-        "action": [{
-                "choose": []
-        }]
+        "action": [{"choose": []}],
     }
 
     for t in TRIGGERS:
@@ -72,23 +66,26 @@ def main():
             "name": t,
             "description": f"{t} event",
             "default": [],
-            "selector": {"action": {} }
+            "selector": {"action": {}},
         }
-        blueprint["action"][0]["choose"].append({
-            "conditions": {
-                "condition": "trigger",
-                "id": f"{t}",
-            },
-            "sequence": tagged_empty_scalar("input", f"'{t}'")
-        })
-        blueprint["trigger"].append({
+        blueprint["action"][0]["choose"].append(
+            {
+                "conditions": {
+                    "condition": "trigger",
+                    "id": f"{t}",
+                },
+                "sequence": tagged_empty_scalar("input", f"'{t}'"),
+            }
+        )
+        blueprint["trigger"].append(
+            {
                 "platform": "device",
                 "domain": f"{DOMAIN}",
                 "device_id": tagged_empty_scalar("input", "'device'"),
                 "type": f"{t}",
                 "id": f"{t}",
-
-        })
+            }
+        )
 
     string_stream = StringIO()
 
@@ -97,9 +94,9 @@ def main():
     string_stream.close()
     print(output_str.replace('"', "'"))
 
-    with open('blueprint.yaml', 'w') as outfile:
+    with open("blueprint.yaml", "w") as outfile:
         yaml.dump(blueprint, outfile)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

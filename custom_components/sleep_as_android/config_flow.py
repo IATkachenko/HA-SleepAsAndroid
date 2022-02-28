@@ -1,11 +1,11 @@
+"""Configuration via UI for the integration."""
 from __future__ import annotations
-
-import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
+import voluptuous as vol
 
-from .const import DOMAIN, DEFAULT_NAME, DEFAULT_TOPIC_TEMPLATE, DEFAULT_QOS
+from .const import DEFAULT_NAME, DEFAULT_QOS, DEFAULT_TOPIC_TEMPLATE, DOMAIN
 
 
 def get_value(config_entry: config_entries | None, param: str, default=None):
@@ -22,27 +22,53 @@ def get_value(config_entry: config_entries | None, param: str, default=None):
         return default
 
 
-def create_schema(config_entry: config_entries | None, step: str = "user") -> vol.Schema:
-    """Generates configuration schema.
+def create_schema(
+    config_entry: config_entries | None, step: str = "user"
+) -> vol.Schema:
+    """Generate configuration schema.
 
     :param config_entry: config_entries|None: config entry from Flow
     :param step: stem name
     """
     schema = vol.Schema({})
     if step == "user":
-        schema = schema.extend({
-            vol.Required("name", default=get_value(config_entry=config_entry, param="name", default=DEFAULT_NAME)): str,
-        })
+        schema = schema.extend(
+            {
+                vol.Required(
+                    "name",
+                    default=get_value(
+                        config_entry=config_entry, param="name", default=DEFAULT_NAME
+                    ),
+                ): str,
+            }
+        )
 
-    schema = schema.extend({
-        vol.Required("topic_template", default=get_value(config_entry=config_entry, param="topic_template", default=DEFAULT_TOPIC_TEMPLATE)): str,
-        vol.Optional("qos", default=get_value(config_entry=config_entry, param="qos", default=DEFAULT_QOS)): int
-    })
+    schema = schema.extend(
+        {
+            vol.Required(
+                "topic_template",
+                default=get_value(
+                    config_entry=config_entry,
+                    param="topic_template",
+                    default=DEFAULT_TOPIC_TEMPLATE,
+                ),
+            ): str,
+            vol.Optional(
+                "qos",
+                default=get_value(
+                    config_entry=config_entry, param="qos", default=DEFAULT_QOS
+                ),
+            ): int,
+        }
+    )
     return schema
 
 
 class SleepAsAndroidConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """First time set up flow."""
+
     def __init__(self):
+        """Initialize entry."""
         self._config_entry: config_entries | None = None
 
     @staticmethod
@@ -52,6 +78,7 @@ class SleepAsAndroidConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return SleepAsAndroidOptionsFlow(config_entry)
 
     async def async_step_user(self, user_input=None):
+        """Handle a flow initialized by the user."""
         if user_input is not None:
             return self.async_create_entry(title=user_input["name"], data=user_input)
 
@@ -61,14 +88,22 @@ class SleepAsAndroidConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class SleepAsAndroidOptionsFlow(config_entries.OptionsFlow):
+    """Changing options flow."""
+
     def __init__(self, config_entry):
+        """Initialize options flow."""
         super().__init__()
         self._config_entry = config_entry
         self._entry_id = config_entry.entry_id
 
     async def async_step_init(self, user_input=None):
+        """Manage the options."""
         errors = {}
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
-        return self.async_show_form(step_id="init", data_schema=create_schema(self._config_entry, step="init"), errors=errors)
+        return self.async_show_form(
+            step_id="init",
+            data_schema=create_schema(self._config_entry, step="init"),
+            errors=errors,
+        )

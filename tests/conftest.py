@@ -1,10 +1,8 @@
 """template conftest."""
-from unittest.mock import patch, AsyncMock
+from unittest.mock import AsyncMock, patch
 
 import pytest
-from pytest_homeassistant_custom_component.common import (
-    async_mock_service,
-)
+from pytest_homeassistant_custom_component.common import async_mock_service
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 
