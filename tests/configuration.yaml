@@ -7,7 +7,7 @@ person:
 system_health:
 automation: !include automations.yaml
 
-#default_config:
+# default_config:
 
 mqtt:
   broker: mqtt

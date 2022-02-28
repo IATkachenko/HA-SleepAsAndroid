@@ -1,6 +1,7 @@
 # Make new release based on conventional commits
 name: Create release
 
+# yamllint disable-line rule:truthy
 on:
   workflow_dispatch:
     inputs:
@@ -34,21 +35,21 @@ jobs:
       tag: ${{ steps.changelog.outputs.tag }}
 
     steps:
-    - name: checkout
-      uses: actions/checkout@v2
-      id: checkout
+      - name: checkout
+        uses: actions/checkout@v2
+        id: checkout
 
-    - name: "Clean dev tags"
-      run: git tag -l --no-merged main | xargs git tag -d
+      - name: "Clean dev tags"
+        run: git tag -l --no-merged main | xargs git tag -d
 
-    - name: Conventional Changelog Action
-      id: changelog
-      uses: TriPSs/conventional-changelog-action@v3
-      with:
-        github-token: ${{ secrets.github_token }}
-        output-file: "false"
-        skip-version-file:   "true"
-        skip-commit: "true"
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.github_token }}
+          output-file: "false"
+          skip-version-file: "true"
+          skip-commit: "true"
 
   version_blueprint:
     name: "Update version and blueprint"
@@ -59,7 +60,7 @@ jobs:
       - name: "Check out repository"
         uses: actions/checkout@v2
       - name: setup python
-        uses: actions/setup-python@v2              
+        uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
@@ -78,7 +79,7 @@ jobs:
         id: commit_version
         run: |
           git commit -m "chore(release): ${{ env.NEW_VERSION }}" custom_components/sleep_as_android/manifest.json
-          
+
       - name: Update blueprint
         id: update_blueprint
         run: |
@@ -100,49 +101,49 @@ jobs:
 
   release:
     name: "Create release"
-    needs: [ changes, version_blueprint ]
+    needs: [changes, version_blueprint]
     if: ${{ needs.changes.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
 
     steps:
-    - name: "Check out repository"
-      uses: actions/checkout@v2
-      with:
+      - name: "Check out repository"
+        uses: actions/checkout@v2
+        with:
           ref: ${{ needs.changes.outputs.tag }}
 
-    - name: Get footer
-      id: footer
-      uses: juliangruber/read-file-action@v1
-      with:
-        path: ./docs/feedback.md
+      - name: Get footer
+        id: footer
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./docs/feedback.md
 
-    - name: "Set package name"
-      working-directory: ./custom_components
-      run: |
-        echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
+      - name: "Set package name"
+        working-directory: ./custom_components
+        run: |
+          echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
 
-    - name: "Set variables"
-      working-directory: ./custom_components
-      run: |
-        echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
-        echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
-        env
+      - name: "Set variables"
+        working-directory: ./custom_components
+        run: |
+          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+          env
 
-    - name: "Zip component dir"
-      working-directory: ./custom_components/${{ env.package }}
-      run: |
-        rm -f manifest.json.tpl
-        zip ${{ env.archive }} -r ./
+      - name: "Zip component dir"
+        working-directory: ./custom_components/${{ env.package }}
+        run: |
+          rm -f manifest.json.tpl
+          zip ${{ env.archive }} -r ./
 
-    - name: Create Release
-      id: release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ needs.changes.outputs.tag }}
-        name: ${{ needs.changes.outputs.tag }}
-        draft: true
-        files: ${{ env.basedir }}/${{ env.archive }}
-        body: |
-          [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
-          ${{ needs.changes.outputs.clean_changelog }}
-          ${{ steps.footer.outputs.content }}
+      - name: Create Release
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.changes.outputs.tag }}
+          name: ${{ needs.changes.outputs.tag }}
+          draft: true
+          files: ${{ env.basedir }}/${{ env.archive }}
+          body: |
+            [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
+            ${{ needs.changes.outputs.clean_changelog }}
+            ${{ steps.footer.outputs.content }}

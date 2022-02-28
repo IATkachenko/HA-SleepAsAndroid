@@ -1,11 +1,12 @@
 name: Validate with hassfest
 
+# yamllint disable-line rule:truthy
 on:
   push:
-    branches: 
+    branches:
       - main
   pull_request:
-    branches: 
+    branches:
       - main
 
 jobs:
