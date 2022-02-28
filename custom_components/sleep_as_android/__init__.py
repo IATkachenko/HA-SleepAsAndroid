@@ -3,7 +3,7 @@
 from awesomeversion import AwesomeVersion
 import logging
 from functools import cached_property, cache
-from typing import Dict, Callable
+from typing import Callable
 
 from homeassistant.components.mqtt.subscription import EntitySubscription
 from pyhaversion import HaVersion

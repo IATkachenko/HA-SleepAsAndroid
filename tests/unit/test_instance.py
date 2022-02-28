@@ -1,6 +1,6 @@
 import pytest
 import unittest.mock as mock
-from unittest.mock import patch, AsyncMock, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock, PropertyMock
 from homeassistant.helpers import entity_registry
 
 import uuid

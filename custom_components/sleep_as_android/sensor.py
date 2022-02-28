@@ -17,7 +17,7 @@ from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 from .device_trigger import TRIGGERS
 from .const import DOMAIN
 
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import SleepAsAndroidInstance
 

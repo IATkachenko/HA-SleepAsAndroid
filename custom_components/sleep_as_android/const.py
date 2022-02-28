@@ -1,5 +1,3 @@
-import voluptuous as vol
-
 DOMAIN = "sleep_as_android"
 DEVICE_MACRO: str = "%%%device%%%"
 
