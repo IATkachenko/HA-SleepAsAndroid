@@ -1,7 +1,9 @@
 """Sleep As Android integration."""
+from __future__ import annotations
 
 from functools import cache, cached_property
 import logging
+import re
 from typing import Callable
 
 from awesomeversion import AwesomeVersion
@@ -68,6 +70,7 @@ class SleepAsAndroidInstance:
         self.__sensors: dict[str, SleepAsAndroidSensor] = {}
         self._entity_registry: er = registry
         self._subscription_state = None
+        self._ha_version: AwesomeVersion | None = None
 
         try:
             self._name: str = self.get_from_config("name")
@@ -81,9 +84,9 @@ class SleepAsAndroidInstance:
         _LOGGER.debug(f"subscription state is {self._subscription_state}")
         if self._subscription_state is not None:
             _LOGGER.debug("Unsubscribing")
-            ha_version = HaVersion()
-            await ha_version.get_version()
-            if ha_version.version >= AwesomeVersion("2022.3.0"):
+            if self._ha_version is None:
+                await self._get_version()
+            if self._ha_version >= AwesomeVersion("2022.3.0"):
                 self._subscription_state = subscription.async_unsubscribe_topics(
                     hass=self.hass,
                     sub_state=self._subscription_state,
@@ -265,10 +268,9 @@ class SleepAsAndroidInstance:
             }
         }
 
-        ha_version = HaVersion()
-        await ha_version.get_version()
-
-        if ha_version.version >= AwesomeVersion("2022.3.0"):
+        if self._ha_version is None:
+            await self._get_version()
+        if self._ha_version >= AwesomeVersion("2022.3.0"):
             self._subscription_state = await subscribe_2022_03(
                 self.hass,
                 self._subscription_state,
@@ -304,3 +306,9 @@ class SleepAsAndroidInstance:
             )
             self.__sensors[sensor_name] = new_sensor
             return new_sensor, True
+
+    async def _get_version(self) -> None:
+        ha_version = HaVersion()
+        await ha_version.get_version()
+        ha_version_cleaned = re.sub(r"[ab][0-9]+$", "", ha_version.version)
+        self._ha_version = AwesomeVersion(ha_version_cleaned)
