@@ -1,14 +1,14 @@
-from io import StringIO
 from enum import Enum
+from io import StringIO
 import os
 import sys
+
+from __init__ import tagged_empty_scalar, yaml
+from conditions import Condition, ConditionMapping
+from inputs import Input, InputMapping
 import ruamel.yaml
 
 from custom_components.sleep_as_android.device_trigger import DOMAIN, TRIGGERS
-
-from __init__ import yaml, tagged_empty_scalar
-from inputs import Input, InputMapping
-from conditions import Condition, ConditionMapping
 
 
 def single_quote_dump(raw_str):

@@ -2,7 +2,6 @@ from enum import Enum
 
 from custom_components.sleep_as_android.const import DOMAIN
 
-
 Input = {
     'device': {
         "name": "SleepAsAndroid device",

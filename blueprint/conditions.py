@@ -1,6 +1,6 @@
 from enum import Enum
-from __init__ import tagged_empty_scalar
 
+from __init__ import tagged_empty_scalar
 
 Condition = {
     "person_in_state": {
