@@ -93,7 +93,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         Should create device for sensor here
         """
         await super().async_added_to_hass()
-        device_registry = await dr.async_get_registry(self.hass)
+        device_registry = dr.async_get(self.hass)
         device = device_registry.async_get_device(
             identifiers=self.device_info["identifiers"], connections=set()
         )
