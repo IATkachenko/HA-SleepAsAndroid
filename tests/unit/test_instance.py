@@ -188,7 +188,7 @@ class TestSleepAsAndroidInstance:
         assert instance.device_name_from_entity_id(entity_id) == e
 
     @patch(
-        "homeassistant.helpers.entity_registry.async_get_registry",
+        "homeassistant.helpers.entity_registry.async_get",
         spec=entity_registry.EntityRegistry,
     )
     def test_entity_registry(self, mocked_entity_registry):
@@ -206,7 +206,7 @@ class TestAsyncSleepAsAndroidInstance:
         """Set up component."""
         assert await custom_components.sleep_as_android.async_setup(None, None) is True
 
-    @patch("homeassistant.helpers.entity_registry.async_get_registry")
+    @patch("homeassistant.helpers.entity_registry.async_get")
     @patch(__name__ + ".SleepAsAndroidInstance", spec=SleepAsAndroidInstance)
     async def test_async_setup_entry(
         self, mocked_SleepAsAndroidInstance, mocked_entity_registry
