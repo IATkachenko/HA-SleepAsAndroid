@@ -34,7 +34,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     if DOMAIN not in hass.data:
         hass.data[DOMAIN] = {}
 
-    registry = await er.async_get_registry(hass)
+    registry = er.async_get(hass)
     hass.data[DOMAIN][config_entry.entry_id] = SleepAsAndroidInstance(
         hass, config_entry, registry
     )
