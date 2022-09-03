@@ -61,7 +61,7 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
  
 ## Usage
 ### blueprint (recommended)
- 1. import [blueprint](blueprint.yaml):
+ 1. import [blueprint](blueprint/full.yaml):
     1. Got to Home Assistant `settings` 
     2. `blueprints` 
     3. `import blueprint` button
