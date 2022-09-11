@@ -31,7 +31,7 @@ You will need:
  * in confirmation dialog, verify selected version and click `Download` in right bottom corner _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
  * restart **Home Assistant** 
  * use browser refresh or clear browser cache to ensure new integration is populated
- * go to **Home Assistant** `Settings` -> `Devices & Services` -> `Integrations` -> `Add Integration` (right bottom conner)
+ * go to **Home Assistant** `Settings` -> `Devices & Services` -> `Integrations` -> `Add Integration` (right bottom corner)
  * type `Sleep As Android` in search field and click at integration name
 
 ### Configuration 
@@ -71,11 +71,11 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
     6. press `import` button
  2. create automatization based on blueprint:
     * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vacation in Siberia, for example)
-    * add actions for [evens]((https://docs.sleep.urbandroid.org/services/automation.html#events))
+    * add actions for [events]((https://docs.sleep.urbandroid.org/services/automation.html#events))
     
 ### on device event
  1. select `Device` in automatization trigger and use `SleepAsAndroid` device;
- 1. select trigger from a list.
+ 2. select trigger from a list.
 
 ![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red) events will be fired up for every MQTT message  
  
