@@ -25,13 +25,14 @@ You will need:
 
 ### Installation
  * go to [HACS](https://hacs.xyz/docs/installation/installation) -> `Integrations`
- * press `+ Explore & Add repositories` button
+ * press `+ Explore & Download Repositories` button
  * type `Sleep As Android` in search field and click at integration name
- * press `Install this repository to HACS` button
- * press `Install` button _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
+ * press `Download` button
+ * in confirmation dialog, verify selected version and click `Download` in right bottom corner _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
  * restart **Home Assistant** 
- * go to **Home Assistant** `Settings` -> `Integrations` -> `Add Integration` (right bottom conner)
- * type `Sleep As Android` in search field and click at integration name. [Clean browser cache if nothing found](https://github.com/IATkachenko/HA-SleepAsAndroid/issues/29).
+ * use browser refresh or clear browser cache to ensure new integration is populated
+ * go to **Home Assistant** `Settings` -> `Devices & Services` -> `Integrations` -> `Add Integration` (right bottom conner)
+ * type `Sleep As Android` in search field and click at integration name
 
 ### Configuration 
 #### Component configuration
