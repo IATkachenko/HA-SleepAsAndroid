@@ -53,8 +53,8 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Remove entry configured via user interface."""
-    unload_ok = await hass.config_entries.async_unload_platforms(
-        entry, [Platform.SENSOR]
+    unload_ok = await hass.config_entries.async_forward_entry_unload(
+        entry, Platform.SENSOR
     )
     if unload_ok:
         instance: SleepAsAndroidInstance = hass.data[DOMAIN].pop(entry.entry_id)
