@@ -13,7 +13,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import NoEntitySpecifiedError
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.device_registry import DeviceEntry
 from pyhaversion import HaVersion
 
 from .const import DEVICE_MACRO, DOMAIN
@@ -60,6 +61,21 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         instance: SleepAsAndroidInstance = hass.data[DOMAIN].pop(entry.entry_id)
         await instance.unsubscribe()
     return unload_ok
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config_entry: ConfigEntry, device_entry: DeviceEntry
+) -> bool:
+    """Remove a config entry from a device."""
+    _LOGGER.debug(
+        f"Removing device {device_entry.name} ({device_entry.id=}) by user request"
+    )
+
+    dr.async_get(hass).async_remove_device(device_id=device_entry.id)
+    instance: SleepAsAndroidInstance = hass.data[DOMAIN][config_entry.entry_id]
+    instance.remove_sensor(device_entry.name)
+
+    return True
 
 
 class SleepAsAndroidInstance:
@@ -314,3 +330,17 @@ class SleepAsAndroidInstance:
         await ha_version.get_version()
         ha_version_cleaned = re.sub(r"[ab][0-9]+$", "", ha_version.version)
         self._ha_version = AwesomeVersion(ha_version_cleaned)
+
+    def remove_sensor(self, sensor_name: str) -> SleepAsAndroidSensor | None:
+        """Remove sensor from internal list."""
+        # cut prefix to convert device name to sensor name. create_entity_id have created it for us
+        sensor_name = (
+            sensor_name[len(self.name) + 1 :]
+            if sensor_name.startswith(self.name)
+            else sensor_name
+        )
+
+        _LOGGER.debug(
+            f"Removing sensor {sensor_name} from internal list {self.__sensors}"
+        )
+        return self.__sensors.pop(sensor_name, None)
