@@ -64,12 +64,12 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
 ### blueprint (recommended)
  1. import [blueprint](blueprint/full.yaml):
     1. Got to Home Assistant `settings` 
-    2. `blueprints` 
-    3. `import blueprint` button
-    4. put blueprint URL
-    5. press `preview` button
-    6. press `import` button
- 2. create automatization based on blueprint:
+    1. `blueprints` 
+    1. `import blueprint` button
+    1. put blueprint URL
+    1. press `preview` button
+    1. press `import` button
+ 1. create automatization based on blueprint:
     * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vacation in Siberia, for example)
     * add actions for [events]((https://docs.sleep.urbandroid.org/services/automation.html#events))
     

@@ -12,6 +12,7 @@ assignees: ''
 **Version:**
 **Installation method** (according to [instructions](https://www.home-assistant.io/installation/)):
 [ ] Operating System
+[ ] Linux VM
 [ ] Container
 [ ] Supervised
 [ ] Core
