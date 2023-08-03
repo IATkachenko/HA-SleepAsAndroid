@@ -4,7 +4,7 @@ import json
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
@@ -68,7 +68,38 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     """
     _attr_icon = "mdi:sleep"
     _attr_should_poll = False
-    _attr_device_class = f"{DOMAIN}__status"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = [
+        "unknown",
+        "sleep_tracking_started",
+        "sleep_tracking_stopped",
+        "sleep_tracking_paused",
+        "sleep_tracking_resumed",
+        "alarm_snooze_clicked",
+        "alarm_snooze_canceled",
+        "time_to_bed_alarm_alert",
+        "alarm_alert_start",
+        "alarm_alert_dismiss",
+        "alarm_skip_next",
+        "show_skip_next_alarm",
+        "rem",
+        "smart_period",
+        "before_smart_period",
+        "lullaby_start",
+        "lullaby_stop",
+        "lullaby_volume_down",
+        "deep_sleep",
+        "light_sleep",
+        "awake",
+        "not_awake",
+        "apnea_alarm",
+        "antisnoring",
+        "sound_event_snore",
+        "sound_event_talk",
+        "sound_event_cough",
+        "sound_event_baby",
+        "sound_event_laugh",
+    ]
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         """Initialize entry."""
@@ -79,13 +110,13 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self.hass: HomeAssistant = hass
 
         self._name: str = name
-        self._state: str = STATE_UNKNOWN
+        self._attr_native_value: str = "unknown"
         self._device_id: str = "unknown"
         self._attr_extra_state_attributes = {}
         self._set_attributes(
             {}
         )  # initiate _attr_extra_state_attributes with empty values
-        _LOGGER.debug(f"Creating sensor with name {name}")
+        _LOGGER.info(f"Creating sensor with name {name}")
 
     async def async_added_to_hass(self):
         """When sensor added to Home Assistant.
@@ -100,8 +131,8 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         _LOGGER.debug("My device id is %s", device.id)
         self._device_id = device.id
 
-        if (old_state := await self.async_get_last_state()) is not None:
-            self._state = old_state.state
+        if (old_state := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = old_state.native_value
             _LOGGER.debug(
                 f"async_added_to_hass: restored previous state for {self.name}: {self.state}"
             )
@@ -138,7 +169,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
                 _LOGGER.warning("Got unexpected payload: '%s'", payload)
 
             self._set_attributes(payload)
-            self.state = new_state
+            self._attr_native_value = new_state
             self._fire_event(self.state)
             self._fire_trigger(self.state)
 
@@ -151,25 +182,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         return self._instance.create_entity_id(self._name)
 
     @property
-    def state(self):
-        """Return the state of the entity."""
-        return self._state
-
-    @state.setter
-    def state(self, new_state: str):
-        """Set new state and fire events if needed.
-
-        Events will be fired if state changed and new state is not STATE_UNKNOWN.
-
-        :param new_state: str: new sensor state
-        """
-        if self._state != new_state:
-            self._state = new_state
-            self.async_write_ha_state()
-        else:
-            _LOGGER.debug("Will not update state because old state == new_state")
-
-    @property
     def unique_id(self) -> str:
         """Return a unique ID."""
         return self._instance.create_entity_id(self._name)
@@ -177,7 +189,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     @property
     def available(self) -> bool:
         """Is sensor available or not."""
-        return self.state != STATE_UNKNOWN
+        return self.native_value != STATE_UNKNOWN
 
     @property
     def device_id(self) -> str:
