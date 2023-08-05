@@ -1,0 +1,36 @@
+{
+   "state": {
+     "sleep_as_android__status": {
+       "unknown": "Unbekannt",
+       "sleep_tracking_started": "Schlafanalyse gestartet",
+       "sleep_tracking_stopped": "Schlafanalyse gestoppt",
+       "sleep_tracking_paused": "Schlafanalyse pausiert",
+       "sleep_tracking_resumed": "Schlafanalyse fortgesetzt",
+       "alarm_snooze_clicked": "Schlummern gedrückt",
+       "alarm_snooze_canceled": "Schlummern abgebrochen",
+       "time_to_bed_alarm_alert": "Schlafenszeit",
+       "alarm_alert_start": "Start des Weckers",
+       "alarm_alert_dismiss": "Wecker gestoppt",
+       "alarm_skip_next": "Wecker ausgesetzt",
+       "show_skip_next_alarm": "Anzeigen des nächsten ausgesetzten Alarmes",
+       "rem": "REM Schlafphase",
+       "smart_period": "Intelligentes Wecken",
+       "before_smart_period": "45 Minuten vorm intelligenten Weckens",
+       "lullaby_start": "Schlaflied start",
+       "lullaby_stop": "Schlaflied stop",
+       "lullaby_volume_down": "Schlaflied leiser",
+       "deep_sleep": "Tiefschlafphase",
+       "light_sleep": "Leichte Schlafphase",
+       "awake": "Wach",
+       "not_awake": "Nicht wach",
+       "apnea_alarm": "Apnoealarm",
+       "antysnoring": "Anti-Schnarchen",
+       "sound_event_snore": "Schnarchen erkannt",
+       "sound_event_talk": "Reden erkannt",
+       "sound_event_cough": "Husten erkannt",
+       "sound_event_baby": "Baby erkannt",
+       "sound_event_laugh": "Lachen erkannt",
+       "before_alarm": "Vorm Alarm"
+     }
+   }
+ }
