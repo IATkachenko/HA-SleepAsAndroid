@@ -69,6 +69,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     _attr_icon = "mdi:sleep"
     _attr_should_poll = False
     _attr_device_class = f"{DOMAIN}__status"
+    _attr_translation_key = "sleep_as_android_status"
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         """Initialize entry."""
@@ -143,7 +144,9 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
                 self._attr_native_value = new_state
                 self.async_write_ha_state()
             else:
-                _LOGGER.debug(f"Will not update state because old {self.state=} == {new_state=}")
+                _LOGGER.debug(
+                    f"Will not update state because old {self.state=} == {new_state=}"
+                )
 
             # fire events in any case: we may have same state but changed labels
             self._fire_event(self.state)
