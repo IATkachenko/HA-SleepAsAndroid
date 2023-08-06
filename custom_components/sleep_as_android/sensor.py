@@ -79,7 +79,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self.hass: HomeAssistant = hass
 
         self._name: str = name
-        self._state: str = STATE_UNKNOWN
+        self._attr_native_value: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
         self._attr_extra_state_attributes = {}
         self._set_attributes(
@@ -101,9 +101,10 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self._device_id = device.id
 
         if (old_state := await self.async_get_last_state()) is not None:
-            self._state = old_state.state
+            self._attr_native_value = old_state.state
             _LOGGER.debug(
-                f"async_added_to_hass: restored previous state for {self.name}: {self.state}"
+                f"async_added_to_hass: restored previous state for {self.name}: "
+                f"{self.state=}, {self._attr_native_value=}."
             )
         else:
             # No previous state. It is fine, but it would be nice to report
@@ -138,7 +139,13 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
                 _LOGGER.warning("Got unexpected payload: '%s'", payload)
 
             self._set_attributes(payload)
-            self.state = new_state
+            if self.state != new_state:
+                self._attr_native_value = new_state
+                self.async_write_ha_state()
+            else:
+                _LOGGER.debug(f"Will not update state because old {self.state=} == {new_state=}")
+
+            # fire events in any case: we may have same state but changed labels
             self._fire_event(self.state)
             self._fire_trigger(self.state)
 
@@ -149,25 +156,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     def name(self):
         """Return the name of the sensor."""
         return self._instance.create_entity_id(self._name)
-
-    @property
-    def state(self):
-        """Return the state of the entity."""
-        return self._state
-
-    @state.setter
-    def state(self, new_state: str):
-        """Set new state and fire events if needed.
-
-        Events will be fired if state changed and new state is not STATE_UNKNOWN.
-
-        :param new_state: str: new sensor state
-        """
-        if self._state != new_state:
-            self._state = new_state
-            self.async_write_ha_state()
-        else:
-            _LOGGER.debug("Will not update state because old state == new_state")
 
     @property
     def unique_id(self) -> str:
