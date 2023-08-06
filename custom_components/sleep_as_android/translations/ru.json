@@ -23,5 +23,43 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "sleep_as_android_status": {
+        "state": {
+          "unknown": "Неизвестно",
+          "sleep_tracking_started": "Отслеживание сна началось",
+          "sleep_tracking_stopped": "Отслеживание сна завершено",
+          "sleep_tracking_paused": "Отслеживание сна приостановлено",
+          "sleep_tracking_resumed": "Отслеживание сна возобновлено",
+          "alarm_snooze_clicked": "Будильник отложен",
+          "alarm_snooze_canceled": "Отложенный будильник выключен",
+          "time_to_bed_alarm_alert": "Пора спать",
+          "alarm_alert_start": "Будильник звонит",
+          "alarm_alert_dismiss": "Будильник выключен",
+          "alarm_skip_next": "Будильник выключен до срабатывания",
+          "show_skip_next_alarm": "Час до будильника",
+          "rem": "Фаза быстрого сна",
+          "smart_period": "Smart period начался",
+          "before_smart_period": "45 минут до smart period",
+          "lullaby_start": "Колыбельная включена",
+          "lullaby_stop": "Колыбельная выключена",
+          "lullaby_volume_down": "Громкость колыбельной уменьшена",
+          "deep_sleep": "Глубокий сон",
+          "light_sleep": "Легкий сон",
+          "awake": "Проснулся(ась)",
+          "not_awake": "Спит",
+          "apnea_alarm": "Падение уровня кислорода",
+          "antisnoring": "Запущена борьба с храпом",
+          "sound_event_snore": "Храп",
+          "sound_event_talk": "Разговоры во сне",
+          "sound_event_cough": "Кашель",
+          "sound_event_baby": "Детский плачь",
+          "sound_event_laugh": "Смех",
+          "before_alarm": "Час до будильника"
+        }
+      }
+    }
   }
 }

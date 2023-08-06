@@ -1,5 +1,5 @@
 {
-  "homeassistant":  "2021.7.0",
+  "homeassistant":  "2023.4.0",
   "name": "Sleep As Android",
   "render_readme": true,
   "zip_release": true,

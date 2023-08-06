@@ -100,6 +100,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         "sound_event_baby",
         "sound_event_laugh",
     ]
+    _attr_translation_key = "sleep_as_android_status"
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
         """Initialize entry."""
@@ -116,7 +117,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self._set_attributes(
             {}
         )  # initiate _attr_extra_state_attributes with empty values
-        _LOGGER.info(f"Creating sensor with name {name}")
+        _LOGGER.debug(f"Creating sensor with name {name}")
 
     async def async_added_to_hass(self):
         """When sensor added to Home Assistant.
@@ -134,7 +135,8 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         if (old_state := await self.async_get_last_sensor_data()) is not None:
             self._attr_native_value = old_state.native_value
             _LOGGER.debug(
-                f"async_added_to_hass: restored previous state for {self.name}: {self.state}"
+                f"async_added_to_hass: restored previous state for {self.name}: "
+                f"{self.state=}, {self.native_value=}."
             )
         else:
             # No previous state. It is fine, but it would be nice to report
@@ -169,7 +171,15 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
                 _LOGGER.warning("Got unexpected payload: '%s'", payload)
 
             self._set_attributes(payload)
-            self._attr_native_value = new_state
+            if self.state != new_state:
+                self._attr_native_value = new_state
+                self.async_write_ha_state()
+            else:
+                _LOGGER.debug(
+                    f"Will not update state because old {self.state=} == {new_state=}"
+                )
+
+            # fire events in any case: we may have same state but changed labels
             self._fire_event(self.state)
             self._fire_trigger(self.state)
 
@@ -204,7 +214,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
             "identifiers": {(DOMAIN, self.unique_id)},
             "name": self.name,
             "manufacturer": "SleepAsAndroid",
-            "type": None,
             "model": "MQTT",
         }
         return info
