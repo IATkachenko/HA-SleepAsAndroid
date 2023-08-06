@@ -111,7 +111,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         self.hass: HomeAssistant = hass
 
         self._name: str = name
-        self._attr_native_value: str = "unknown"
+        self._attr_native_value: str = STATE_UNKNOWN
         self._device_id: str = "unknown"
         self._attr_extra_state_attributes = {}
         self._set_attributes(
