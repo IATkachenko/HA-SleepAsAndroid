@@ -192,7 +192,6 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
             "identifiers": {(DOMAIN, self.unique_id)},
             "name": self.name,
             "manufacturer": "SleepAsAndroid",
-            "type": None,
             "model": "MQTT",
         }
         return info
