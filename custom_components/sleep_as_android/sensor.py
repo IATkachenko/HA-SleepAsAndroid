@@ -4,7 +4,7 @@ import json
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
@@ -12,7 +12,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_registry import async_entries_for_config_entry
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, sleep_tracking_states
 from .device_trigger import TRIGGERS
 
 if TYPE_CHECKING:
@@ -68,7 +68,11 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     """
     _attr_icon = "mdi:sleep"
     _attr_should_poll = False
-    _attr_device_class = f"{DOMAIN}__status"
+    _attr_device_class = SensorDeviceClass.ENUM
+    _attr_options = [
+        "unknown",
+        *sleep_tracking_states,
+    ]
     _attr_translation_key = "sleep_as_android_status"
 
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, name: str):
@@ -101,11 +105,11 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
         _LOGGER.debug("My device id is %s", device.id)
         self._device_id = device.id
 
-        if (old_state := await self.async_get_last_state()) is not None:
-            self._attr_native_value = old_state.state
+        if (old_state := await self.async_get_last_sensor_data()) is not None:
+            self._attr_native_value = old_state.native_value
             _LOGGER.debug(
                 f"async_added_to_hass: restored previous state for {self.name}: "
-                f"{self.state=}, {self._attr_native_value=}."
+                f"{self.state=}, {self.native_value=}."
             )
         else:
             # No previous state. It is fine, but it would be nice to report
@@ -168,7 +172,7 @@ class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
     @property
     def available(self) -> bool:
         """Is sensor available or not."""
-        return self.state != STATE_UNKNOWN
+        return self.native_value != STATE_UNKNOWN
 
     @property
     def device_id(self) -> str:
