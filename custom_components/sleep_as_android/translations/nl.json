@@ -51,7 +51,7 @@
           "awake": "Wakker",
           "not_awake": "Niet wakker",
           "apnea_alarm": "Apneu alarm",
-          "antysnoring": "Anti snurken",
+          "antisnoring": "Anti snurken",
           "sound_event_snore": "Snurken gedetecteerd",
           "sound_event_talk": "Praten gedetecteerd",
           "sound_event_cough": "Hoesten gedetecteerd",

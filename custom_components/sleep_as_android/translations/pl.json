@@ -51,7 +51,7 @@
           "awake": "Obudzony",
           "not_awake": "Śpi",
           "apnea_alarm": "Bezdech senny",
-          "antysnoring": "Anty-chrapanie rozpoczęte",
+          "antisnoring": "Anty-chrapanie rozpoczęte",
           "sound_event_snore": "Wykryto chrapanie",
           "sound_event_talk": "Wykryto rozmowę",
           "sound_event_cough": "Wykryto kaszel",
