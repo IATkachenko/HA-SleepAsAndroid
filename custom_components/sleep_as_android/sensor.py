@@ -69,7 +69,7 @@ class SleepAsAndroidSensor(RestoreSensor):
     _attr_should_poll = False
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = [
-        "unknown",
+        STATE_UNKNOWN,
         *sleep_tracking_states,
     ]
     _attr_translation_key = "sleep_as_android_status"
