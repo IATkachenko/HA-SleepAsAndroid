@@ -23,5 +23,43 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "sleep_as_android_status": {
+        "state": {
+          "unknown": "Unknown",
+          "sleep_tracking_started": "Sleeptracking started",
+          "sleep_tracking_stopped": "Sleeptracking stopped",
+          "sleep_tracking_paused": "Sleeptracking paused",
+          "sleep_tracking_resumed": "Sleeptracking resumed",
+          "alarm_snooze_clicked": "Alarm snoozed",
+          "alarm_snooze_canceled": "Snoozed alarm cancelled",
+          "time_to_bed_alarm_alert": "Bedtime",
+          "alarm_alert_start": "Alarm starts",
+          "alarm_alert_dismiss": "Alarm dismissed",
+          "alarm_skip_next": "Alarm skipped",
+          "show_skip_next_alarm": "Hour before alarm",
+          "rem": "REM phase",
+          "smart_period": "Smart period",
+          "before_smart_period": "45 minutes before smart period",
+          "lullaby_start": "Lullaby started",
+          "lullaby_stop": "Lullaby stopped",
+          "lullaby_volume_down": "Lullaby volume down",
+          "deep_sleep": "Deep sleep",
+          "light_sleep": "Light sleep",
+          "awake": "Awake",
+          "not_awake": "Not awake",
+          "apnea_alarm": "Apnea alarm",
+          "antisnoring": "Anti-snoring",
+          "sound_event_snore": "Snoring detected",
+          "sound_event_talk": "Talking detected",
+          "sound_event_cough": "Cough detected",
+          "sound_event_baby": "Baby detected",
+          "sound_event_laugh": "Laugh detected",
+          "before_alarm": "Before alarm"
+        }
+      }
+    }
   }
 }
