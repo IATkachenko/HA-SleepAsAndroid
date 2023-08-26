@@ -4,13 +4,12 @@ import json
 import logging
 from typing import TYPE_CHECKING
 
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
+from homeassistant.components.sensor import RestoreSensor, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_UNAVAILABLE, STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.entity_registry import async_entries_for_config_entry
-from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import DOMAIN, sleep_tracking_states
 from .device_trigger import TRIGGERS
@@ -53,7 +52,7 @@ async def async_setup_entry(
     return True
 
 
-class SleepAsAndroidSensor(SensorEntity, RestoreEntity):
+class SleepAsAndroidSensor(RestoreSensor):
     """Sensor for the integration."""
 
     __additional_attributes: dict[str, str] = {
