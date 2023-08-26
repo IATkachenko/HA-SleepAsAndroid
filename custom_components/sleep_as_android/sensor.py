@@ -106,6 +106,11 @@ class SleepAsAndroidSensor(RestoreSensor):
 
         if (old_state := await self.async_get_last_sensor_data()) is not None:
             self._attr_native_value = old_state.native_value
+            if self._attr_native_value.lower() == STATE_UNKNOWN.lower():
+                _LOGGER.debug(
+                    f"Got {self._attr_native_value=}. Will use {STATE_UNKNOWN=} instead"
+                )
+                self._attr_native_value = STATE_UNKNOWN
             _LOGGER.debug(
                 f"async_added_to_hass: restored previous state for {self.name}: "
                 f"{self.state=}, {self.native_value=}."
@@ -139,6 +144,11 @@ class SleepAsAndroidSensor(RestoreSensor):
             payload = json.loads(msg.payload)
             try:
                 new_state = payload["event"]
+                if new_state.lower() == STATE_UNKNOWN.lower():
+                    _LOGGER.debug(
+                        f"Got {payload['event']=}. Will use {STATE_UNKNOWN=} instead"
+                    )
+                    new_state = STATE_UNKNOWN
             except KeyError:
                 _LOGGER.warning("Got unexpected payload: '%s'", payload)
 

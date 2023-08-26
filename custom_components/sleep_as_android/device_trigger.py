@@ -5,7 +5,13 @@ from homeassistant.components.device_automation import (
     DEVICE_TRIGGER_BASE_SCHEMA as HA_TRIGGER_BASE_SCHEMA,
 )
 from homeassistant.components.homeassistant.triggers import event as event_trigger
-from homeassistant.const import CONF_DEVICE_ID, CONF_DOMAIN, CONF_PLATFORM, CONF_TYPE
+from homeassistant.const import (
+    CONF_DEVICE_ID,
+    CONF_DOMAIN,
+    CONF_PLATFORM,
+    CONF_TYPE,
+    STATE_UNKNOWN,
+)
 from homeassistant.core import HomeAssistant
 import voluptuous as vol
 
@@ -13,7 +19,7 @@ from .const import DOMAIN, sleep_tracking_states
 
 _LOGGER = logging.getLogger(__name__)
 
-TRIGGERS = sleep_tracking_states
+TRIGGERS = sleep_tracking_states + [STATE_UNKNOWN]
 
 TRIGGER_SCHEMA = HA_TRIGGER_BASE_SCHEMA.extend(
     {
