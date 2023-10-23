@@ -57,7 +57,8 @@
           "sound_event_cough": "Cough detected",
           "sound_event_baby": "Baby detected",
           "sound_event_laugh": "Laugh detected",
-          "before_alarm": "Before alarm"
+          "before_alarm": "Before alarm",
+          "alarm_rescheduled": "Alarm rescheduled"
         }
       }
     }
