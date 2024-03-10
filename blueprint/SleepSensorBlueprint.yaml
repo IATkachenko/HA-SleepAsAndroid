@@ -1,12 +1,12 @@
 blueprint:
   name: Sleep as Android MQTT sensor actions
-  description: Define actions based on Sleep As Android sensor states
+  description: Define actions based on the sensor states provided by the HA-SleepAsAndroid integration.
   domain: automation
   source_url: https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint/SleepSensorBlueprint.yaml
   input:
     sleep_entity:
-      name: SleepAsAndroid Entity
-      description: 'Sleep As Android Integration Entity'
+      name: SleepAsAndroid Sensor
+      description: 'SleepAsAndroid sensor to use as trigger for the automation.'
       selector:
         entity:
           filter:
