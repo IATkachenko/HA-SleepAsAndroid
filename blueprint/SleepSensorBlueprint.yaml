@@ -1,6 +1,6 @@
 blueprint:
   name: Sleep as Android MQTT sensor actions
-  description: Define actions based on the sensor states provided by the HA-SleepAsAndroid integration.
+  description: Define actions based on the sensor states provided by the HA-SleepAsAndroid integration. See the [SleepAsAndroid docs](https://docs.sleep.urbandroid.org/services/automation.html#events) for more information.
   domain: automation
   source_url: https://github.com/IATkachenko/HA-SleepAsAndroid/blob/main/blueprint/SleepSensorBlueprint.yaml
   input:
@@ -49,145 +49,145 @@ blueprint:
         action: {}
     alarm_snooze_clicked:
       name: alarm_snooze_clicked
-      description: alarm_snooze_clicked event
+      description: You have snoozed a ringing alarm.
       default: []
       selector:
         action: {}
     alarm_snooze_canceled:
       name: alarm_snooze_canceled
-      description: alarm_snooze_canceled event
+      description: You have a canceled an alarm that is currently snoozed.
       default: []
       selector:
         action: {}
     time_to_bed_alarm_alert:
       name: time_to_bed_alarm_alert
-      description: time_to_bed_alarm_alert event
+      description: Fires when you get a bedtime notification.
       default: []
       selector:
         action: {}
     alarm_alert_start:
       name: alarm_alert_start
-      description: alarm_alert_start event
+      description: Fires when alarm starts.
       default: []
       selector:
         action: {}
     alarm_alert_dismiss:
       name: alarm_alert_dismiss
-      description: alarm_alert_dismiss event
+      description: Fires when you dismiss alarm (after you solve CAPTCHA, if it’s set).
       default: []
       selector:
         action: {}
     alarm_skip_next:
       name: alarm_skip_next
-      description: alarm_skip_next event
+      description: Fires when you tap dismiss an alarm from notification before it actually rings.
       default: []
       selector:
         action: {}
     show_skip_next_alarm:
       name: show_skip_next_alarm
-      description: show_skip_next_alarm event
+      description: Fires exactly 1 hour before the next alarm is triggered.
       default: []
       selector:
         action: {}
     rem:
       name: rem
-      description: rem event
+      description: Fires when Sleep estimates the start of REM phase.
       default: []
       selector:
         action: {}
     smart_period:
       name: smart_period
-      description: smart_period event
+      description: Fires at the start of the smart period.
       default: []
       selector:
         action: {}
     before_smart_period:
       name: before_smart_period
-      description: before_smart_period event
+      description: Fires 45 minutes before the start of smart period.
       default: []
       selector:
         action: {}
     lullaby_start:
       name: lullaby_start
-      description: lullaby_start event
+      description: Fires when lullaby starts playing.
       default: []
       selector:
         action: {}
     lullaby_stop:
       name: lullaby_stop
-      description: lullaby_stop event
+      description: Fires when lullaby is stopped (either manually or automatically).
       default: []
       selector:
         action: {}
     lullaby_volume_down:
       name: lullaby_volume_down
-      description: lullaby_volume_down event
+      description: Fires when Sleep detects you fell asleep and starts lowering the volume of lullabies.
       default: []
       selector:
         action: {}
     deep_sleep:
       name: deep_sleep
-      description: deep_sleep event
+      description: Fires when Sleep detects you going into deep sleep phase. Warning: This may result in lots of events during the night.
       default: []
       selector:
         action: {}
     light_sleep:
       name: light_sleep
-      description: light_sleep event
+      description: Fires when Sleep detects you going into light sleep phase. Warning: This may result in lots of events during the night.
       default: []
       selector:
         action: {}
     awake:
       name: awake
-      description: awake event
+      description: Fires when Sleep detects you woke up.
       default: []
       selector:
         action: {}
     not_awake:
       name: not_awake
-      description: not_awake event
+      description: Fires when Sleep detects you fell asleep.
       default: []
       selector:
         action: {}
     apnea_alarm:
       name: apnea_alarm
-      description: apnea_alarm event
+      description: Fires when Sleep detects a significant dip in your oxygen levels.
       default: []
       selector:
         action: {}
     antisnoring:
       name: antisnoring
-      description: antisnoring event
+      description: Fires when antisnoring is triggered.
       default: []
       selector:
         action: {}
     sound_event_snore:
       name: sound_event_snore
-      description: sound_event_snore event
+      description: Fires when Sleep detects snoring.
       default: []
       selector:
         action: {}
     sound_event_talk:
       name: sound_event_talk
-      description: sound_event_talk event
+      description: Fires when Sleep detects talking.
       default: []
       selector:
         action: {}
     sound_event_cough:
       name: sound_event_cough
-      description: sound_event_cough event
+      description: Fires when Sleep detects coughing.
       default: []
       selector:
         action: {}
     sound_event_baby:
       name: sound_event_baby
-      description: sound_event_baby event
+      description: Fires when Sleep detects a baby cry.
       default: []
       selector:
         action: {}
     sound_event_laugh:
       name: sound_event_laugh
-      description: sound_event_laugh event
+      description: Fires when Sleep detects laughter.
       default: []
       selector:
         action: {}
