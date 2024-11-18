@@ -260,7 +260,7 @@ class SleepAsAndroidInstance:
         ) -> dict[str, EntitySubscription]:
 
             result = subscription.async_prepare_subscribe_topics(
-                hass,
+                _hass,
                 _state,
                 _topic,
             )
