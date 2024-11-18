@@ -104,7 +104,12 @@ class SleepAsAndroidInstance:
             _LOGGER.debug("Unsubscribing")
             if self._ha_version is None:
                 await self._get_version()
-            if self._ha_version >= AwesomeVersion("2022.3.0"):
+            if self._ha_version >= AwesomeVersion("2024.6.0"):
+                self._subscription_state = subscription.async_unsubscribe_topics(
+                    hass=self.hass,
+                    new_state=self._subscription_state,
+                )
+            elif self._ha_version >= AwesomeVersion("2022.3.0"):
                 self._subscription_state = subscription.async_unsubscribe_topics(
                     hass=self.hass,
                     sub_state=self._subscription_state,
