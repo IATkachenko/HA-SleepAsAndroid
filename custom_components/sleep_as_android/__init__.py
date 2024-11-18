@@ -40,11 +40,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         hass, config_entry, registry
     )
 
-    result = await hass.config_entries.async_forward_entry_setup(
-        config_entry, Platform.SENSOR
+    await hass.config_entries.async_forward_entry_setups(
+        config_entry, [Platform.SENSOR]
     )
     config_entry.async_on_unload(config_entry.add_update_listener(async_update_options))
-    return result
+    return True
 
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
