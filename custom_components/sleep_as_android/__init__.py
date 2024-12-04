@@ -261,7 +261,7 @@ class SleepAsAndroidInstance:
 
             result = subscription.async_prepare_subscribe_topics(
                 hass=_hass,
-                new_state=_state,
+                sub_state=_state,
                 topics=_topic,
             )
             if result is not None:
