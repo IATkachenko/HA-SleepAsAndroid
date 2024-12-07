@@ -271,29 +271,6 @@ class SleepAsAndroidInstance:
                 )
             return result
 
-        async def subscribe_2022_03(
-            _hass: HomeAssistant, _state, _topic: dict
-        ) -> dict[str, EntitySubscription]:
-
-            result = subscription.async_prepare_subscribe_topics(
-                hass=_hass,
-                new_state=_state,
-                topics=_topic,
-            )
-            if result is not None:
-                await subscription.async_subscribe_topics(
-                    hass=self.hass,
-                    sub_state=result,
-                )
-            return result
-
-        async def subscribe_2021_07(
-            _hass: HomeAssistant, _state, _topic: dict
-        ) -> dict[str, EntitySubscription]:
-            return await subscription.async_subscribe_topics(
-                hass=_hass, new_state=_state, topics=_topic
-            )
-
         topic = {
             "state_topic": {
                 "topic": self.topic_template,
