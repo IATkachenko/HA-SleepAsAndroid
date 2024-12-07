@@ -140,25 +140,25 @@ class SleepAsAndroidSensor(RestoreSensor):
         """
         _LOGGER.debug(f"Processing message {msg}")
         try:
-            new_state = STATE_UNKNOWN
+            sub_state = STATE_UNKNOWN
             payload = json.loads(msg.payload)
             try:
-                new_state = payload["event"]
-                if new_state.lower() == STATE_UNKNOWN.lower():
+                sub_state = payload["event"]
+                if sub_state.lower() == STATE_UNKNOWN.lower():
                     _LOGGER.debug(
                         f"Got {payload['event']=}. Will use {STATE_UNKNOWN=} instead"
                     )
-                    new_state = STATE_UNKNOWN
+                    sub_state = STATE_UNKNOWN
             except KeyError:
                 _LOGGER.warning("Got unexpected payload: '%s'", payload)
 
             self._set_attributes(payload)
-            if self.state != new_state:
-                self._attr_native_value = new_state
+            if self.state != sub_state:
+                self._attr_native_value = sub_state
                 self.async_write_ha_state()
             else:
                 _LOGGER.debug(
-                    f"Will not update state because old {self.state=} == {new_state=}"
+                    f"Will not update state because old {self.state=} == {sub_state=}"
                 )
 
             # fire events in any case: we may have same state but changed labels
@@ -209,20 +209,20 @@ class SleepAsAndroidSensor(RestoreSensor):
         _LOGGER.debug("Firing '%s' with payload: '%s'", self.name, payload)
         self.hass.bus.fire(self.name, payload)
 
-    def _fire_trigger(self, new_state: str):
+    def _fire_trigger(self, sub_state: str):
         """Fire trigger based on new state.
 
-        :param new_state: type of trigger to fire
+        :param sub_state: type of trigger to fire
         """
-        if new_state in TRIGGERS:
+        if sub_state in TRIGGERS:
             self.hass.bus.async_fire(
-                DOMAIN + "_event", {"device_id": self.device_id, "type": new_state}
+                DOMAIN + "_event", {"device_id": self.device_id, "type": sub_state}
             )
         else:
             _LOGGER.warning(
                 "Got %s event, but it is not in TRIGGERS list: will not fire this event for "
                 "trigger!",
-                new_state,
+                sub_state,
             )
 
     def _set_attributes(self, payload: dict):
