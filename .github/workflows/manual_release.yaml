@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: '3.10'
 
+      - name: "Setup environment"
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions@no_spam.please"
+
       - name: Update version file
         id: update
         run: sed -e "s/%%%VERSION%%%/${{ github.event.inputs.tag }}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
