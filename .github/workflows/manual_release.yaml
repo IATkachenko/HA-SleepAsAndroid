@@ -35,7 +35,7 @@ jobs:
       - name: Commit version
         id: commit_version
         run: |
-          git commit -m "chore(release): ${{ env.NEW_VERSION }}" custom_components/sleep_as_android/manifest.json
+          git commit -m "chore(release): ${{ env.NEW_VERSION }}" custom_components/sleep_as_android/manifest.json || true
 
       - name: Update blueprint
         id: update_blueprint
