@@ -5,7 +5,7 @@ name: Manual create release
 on:
   workflow_dispatch:
     inputs:
-      branch:
+      tag:
         description: 'tag to release'
         required: true
 
@@ -23,7 +23,7 @@ jobs:
 
       - name: "Prepare"
         run: |
-          echo "NEW_VERSION=${{ github.event.inputs.branch }}" | sed -e 's/=v/=/' >> $GITHUB_ENV
+          echo "NEW_VERSION=${{ github.event.inputs.tag }}" | sed -e 's/=v/=/' >> $GITHUB_ENV
           # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions@no_spam.please"
@@ -65,7 +65,7 @@ jobs:
       - name: "Check out repository"
         uses: actions/checkout@v2
         with:
-          ref: ${{ needs.changes.outputs.tag }}
+          ref: ${{ github.event.inputs.tag }}
 
       - name: Get footer
         id: footer
@@ -95,11 +95,11 @@ jobs:
         id: release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.changes.outputs.tag }}
-          name: ${{ needs.changes.outputs.tag }}
+          tag_name: ${{ github.event.inputs.tag }}
+          name: ${{ github.event.inputs.tag }}
           draft: true
           files: ${{ env.basedir }}/${{ env.archive }}
           body: |
-            [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ needs.changes.outputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ needs.changes.outputs.tag }})
+            [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.event.inputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.tag }})
             "Put changelog here"
             ${{ steps.footer.outputs.content }}
