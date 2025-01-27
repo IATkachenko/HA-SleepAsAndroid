@@ -106,13 +106,13 @@ class SleepAsAndroidInstance:
                 await self._get_version()
             if self._ha_version >= AwesomeVersion("2022.3.0"):
                 self._subscription_state = subscription.async_unsubscribe_topics(
-                    hass=self.hass,
-                    sub_state=self._subscription_state,
+                    self.hass,
+                    self._subscription_state,
                 )
             else:
                 self._subscription_state = await subscription.async_unsubscribe_topics(
-                    hass=self.hass,
-                    sub_state=self._subscription_state,
+                    self.hass,
+                    self._subscription_state,
                 )
 
     @cached_property
@@ -276,9 +276,9 @@ class SleepAsAndroidInstance:
         ) -> dict[str, EntitySubscription]:
 
             result = subscription.async_prepare_subscribe_topics(
-                hass=_hass,
-                new_state=_state,
-                topics=_topic,
+                _hass,
+                _state,
+                _topic,
             )
             if result is not None:
                 await subscription.async_subscribe_topics(
