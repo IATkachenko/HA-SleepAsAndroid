@@ -310,7 +310,7 @@ class SleepAsAndroidInstance:
                 self._subscription_state,
                 topic,
             )
-        if self._ha_version >= AwesomeVersion("2022.3.0"):
+        elif self._ha_version >= AwesomeVersion("2022.3.0"):
             self._subscription_state = await subscribe_2022_03(
                 self.hass,
                 self._subscription_state,
