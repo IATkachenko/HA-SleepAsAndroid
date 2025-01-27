@@ -9,5 +9,5 @@
   "issue_tracker": "https://github.com/IATkachenko/HA-SleepAsAndroid/issues",
   "quality_scale": "silver",
   "requirements": ["pyhaversion"],
-  "version": "2.3.1"
+  "version": "2.3.2"
 }
