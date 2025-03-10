@@ -1,0 +1,103 @@
+# Make new release based on conventional commits
+name: Manual create release
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'tag to release'
+        required: true
+
+jobs:
+  version_blueprint:
+    name: "Update version and blueprint"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check out repository"
+        uses: actions/checkout@v2
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: "Setup environment"
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions@no_spam.please"
+
+      - name: Update version file
+        id: update
+        run: sed -e "s/%%%VERSION%%%/${{ github.event.inputs.tag }}/" ./custom_components/sleep_as_android/manifest.json.tpl >custom_components/sleep_as_android/manifest.json
+
+      - name: Commit version
+        id: commit_version
+        run: |
+          git commit -m "chore(release): ${{ github.event.inputs.tag }}" custom_components/sleep_as_android/manifest.json || true
+
+      - name: Update blueprint
+        id: update_blueprint
+        run: |
+          pip install ruamel.yaml wheel
+          pip install homeassistant
+          python blueprint/blueprint_generator.py || true
+
+      - name: Commit bluepint
+        id: commit_blueprint
+        # We may skip this if blueprint was not updated
+        run: |
+          git commit -m "chore(blueprint): update blueprints for ${{ github.event.inputs.tag }}" blueprint/*.yaml || true
+
+      - name: Update
+        id: update_tag
+        run: |
+          git push origin main && \
+          git tag -f -a -m "v${{ github.event.inputs.tag }}" v${{ github.event.inputs.tag }} && git push -f --tags || true
+
+  release:
+    name: "Create release"
+    needs: [version_blueprint]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Check out repository"
+        uses: actions/checkout@v2
+        with:
+          ref: v${{ github.event.inputs.tag }}
+
+      - name: Get footer
+        id: footer
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./docs/feedback.md
+
+      - name: "Set package name"
+        working-directory: ./custom_components
+        run: |
+          echo "package=$(ls -F | grep \/$ | sed -n "s/\///g;1p")" >> $GITHUB_ENV
+
+      - name: "Set variables"
+        working-directory: ./custom_components
+        run: |
+          echo "archive=${{ env.package }}.zip" >> $GITHUB_ENV
+          echo "basedir=$(pwd)/${{ env.package }}" >> $GITHUB_ENV
+          env
+
+      - name: "Zip component dir"
+        working-directory: ./custom_components/${{ env.package }}
+        run: |
+          rm -f manifest.json.tpl
+          zip ${{ env.archive }} -r ./
+
+      - name: Create Release
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.tag }}
+          name: v${{ github.event.inputs.tag }}
+          draft: true
+          files: ${{ env.basedir }}/${{ env.archive }}
+          body: |
+            [![GitHub release (by tag)](https://img.shields.io/github/downloads/${{ github.repository }}/v${{ github.event.inputs.tag }}/total?style=plastic)](https://github.com/${{ github.repository }}/releases/tag/v${{ github.event.inputs.tag }})
+            "Put changelog here"
+            ${{ steps.footer.outputs.content }}

@@ -40,11 +40,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
         hass, config_entry, registry
     )
 
-    result = await hass.config_entries.async_forward_entry_setup(
-        config_entry, Platform.SENSOR
+    await hass.config_entries.async_forward_entry_setups(
+        config_entry, [Platform.SENSOR]
     )
     config_entry.async_on_unload(config_entry.add_update_listener(async_update_options))
-    return result
+    return True
 
 
 async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -255,6 +255,22 @@ class SleepAsAndroidInstance:
                 # ToDo:  async_write_ha_state() runs before async_add_entities, so entity have no entity_id yet
                 pass
 
+        async def subscribe_2024_12(
+            _hass: HomeAssistant, _state, _topic: dict
+        ) -> dict[str, EntitySubscription]:
+
+            result = subscription.async_prepare_subscribe_topics(
+                hass=_hass,
+                sub_state=_state,
+                topics=_topic,
+            )
+            if result is not None:
+                await subscription.async_subscribe_topics(
+                    hass=self.hass,
+                    sub_state=result,
+                )
+            return result
+
         async def subscribe_2022_03(
             _hass: HomeAssistant, _state, _topic: dict
         ) -> dict[str, EntitySubscription]:
@@ -288,7 +304,13 @@ class SleepAsAndroidInstance:
 
         if self._ha_version is None:
             await self._get_version()
-        if self._ha_version >= AwesomeVersion("2022.3.0"):
+        if self._ha_version >= AwesomeVersion("2024.12.0"):
+            self._subscription_state = await subscribe_2024_12(
+                self.hass,
+                self._subscription_state,
+                topic,
+            )
+        elif self._ha_version >= AwesomeVersion("2022.3.0"):
             self._subscription_state = await subscribe_2022_03(
                 self.hass,
                 self._subscription_state,
