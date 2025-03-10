@@ -39,4 +39,5 @@ sleep_tracking_states = [
     "sound_event_laugh",
     "before_alarm",
     "alarm_rescheduled",
+    "alarm_wake_up_check"
 ]
