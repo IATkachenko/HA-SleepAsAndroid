@@ -9,7 +9,7 @@ blueprint:
       description: 'Device for Sleep as Android '
       selector:
         device:
-          integration: sleep_as_android
+          integration: sleep_as_android_mqtt
     person:
       name: Person
       description: Person for checking state
@@ -25,7 +25,7 @@ blueprint:
       description: Sensor for getting label attribute
       selector:
         entity:
-          integration: sleep_as_android
+          integration: sleep_as_android_mqtt
           domain: sensor
     label:
       name: Label
@@ -64,27 +64,27 @@ mode: queued
 max_exceeded: silent
 trigger:
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_snooze_clicked
   id: alarm_snooze_clicked
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_snooze_canceled
   id: alarm_snooze_canceled
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_alert_start
   id: alarm_alert_start
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_alert_dismiss
   id: alarm_alert_dismiss
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_skip_next
   id: alarm_skip_next

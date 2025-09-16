@@ -1,6 +1,6 @@
 from enum import Enum
 
-from custom_components.sleep_as_android.const import DOMAIN
+from custom_components.sleep_as_android_mqtt.const import DOMAIN
 
 Input = {
     'device': {

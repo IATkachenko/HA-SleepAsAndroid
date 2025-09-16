@@ -1,6 +1,6 @@
 """Consts for the integration."""
 
-DOMAIN = "sleep_as_android"
+DOMAIN = "sleep_as_android_mqtt"
 DEVICE_MACRO: str = "%%%device%%%"
 
 DEFAULT_NAME = "SleepAsAndroid"

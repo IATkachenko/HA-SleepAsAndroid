@@ -8,7 +8,7 @@ from conditions import Condition, ConditionMapping
 from inputs import Input, InputMapping
 import ruamel.yaml
 
-from custom_components.sleep_as_android.device_trigger import DOMAIN, TRIGGERS
+from custom_components.sleep_as_android_mqtt.device_trigger import DOMAIN, TRIGGERS
 
 
 def single_quote_dump(raw_str):

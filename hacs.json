@@ -1,7 +1,7 @@
 {
-  "homeassistant":  "2023.4.0",
+  "homeassistant":  "2025.9.0",
   "name": "Sleep As Android",
   "render_readme": true,
   "zip_release": true,
-  "filename": "sleep_as_android.zip"
+  "filename": "sleep_as_android_mqtt.zip"
 }

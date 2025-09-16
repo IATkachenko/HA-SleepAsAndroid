@@ -8,7 +8,7 @@ from homeassistant.const import CONF_NAME
 import pytest
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.sleep_as_android.const import DOMAIN
+from custom_components.sleep_as_android_mqtt.const import DOMAIN
 
 USER_INPUT = {
     "name": "SleepAsAndroid_test",
@@ -21,7 +21,7 @@ USER_INPUT = {
 def bypass_setup_fixture():
     """Prevent setup."""
     with patch(
-        "custom_components.sleep_as_android.async_setup_entry",
+        "custom_components.sleep_as_android_mqtt.async_setup_entry",
         return_value=True,
     ):
         yield
@@ -100,6 +100,6 @@ async def test_options_flow(hass, mqtt_mock):
 
 async def test_config_flow_enabled():
     """Test is manifest.json have 'config_flow': true."""
-    with open("custom_components/sleep_as_android/manifest.json") as f:
+    with open("custom_components/sleep_as_android_mqtt/manifest.json") as f:
         manifest = json.load(f)
         assert manifest.get("config_flow") is True

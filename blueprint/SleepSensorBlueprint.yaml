@@ -10,7 +10,7 @@ blueprint:
       selector:
         entity:
           filter:
-            integration: sleep_as_android
+            integration: sleep_as_android_mqtt
           multiple: false
     person:
       name: Person

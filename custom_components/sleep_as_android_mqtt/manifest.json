@@ -1,5 +1,5 @@
 {
-  "domain": "sleep_as_android",
+  "domain": "sleep_as_android_mqtt",
   "name": "Sleep As Android",
   "codeowners": ["@IATkachenko"],
   "config_flow": true,

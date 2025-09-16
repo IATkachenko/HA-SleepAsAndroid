@@ -7,9 +7,9 @@ import uuid
 from homeassistant.helpers import entity_registry
 import pytest
 
-import custom_components.sleep_as_android
-from custom_components.sleep_as_android import SleepAsAndroidInstance
-from custom_components.sleep_as_android.const import DEVICE_MACRO, DOMAIN
+import custom_components.sleep_as_android_mqtt
+from custom_components.sleep_as_android_mqtt import SleepAsAndroidInstance
+from custom_components.sleep_as_android_mqtt.const import DEVICE_MACRO, DOMAIN
 
 SleepAsAndroidInstance_cache = SleepAsAndroidInstance
 hass = MagicMock()

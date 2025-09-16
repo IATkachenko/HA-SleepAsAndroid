@@ -7,6 +7,11 @@
 
 This integration will allow you to get events from your [SleepAsAndroid](https://sleep.urbandroid.org) application in a form of the sensor states and events in Home assistant.
 
+# This repo will be archived soon! 
+
+Sine 2025.9 Home Assistant have own default integration with Sleep as Android. 
+Please migrate to it. Documentation is available at https://www.home-assistant.io/integrations/sleep_as_android/
+
 ## Installation & configuration
 ### Requirements
 You will need:  

@@ -9,7 +9,7 @@ blueprint:
       description: 'Device for Sleep as Android '
       selector:
         device:
-          integration: sleep_as_android
+          integration: sleep_as_android_mqtt
     person:
       name: Person
       description: Person for checking state
@@ -198,147 +198,147 @@ mode: queued
 max_exceeded: silent
 trigger:
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sleep_tracking_started
   id: sleep_tracking_started
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sleep_tracking_stopped
   id: sleep_tracking_stopped
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sleep_tracking_paused
   id: sleep_tracking_paused
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sleep_tracking_resumed
   id: sleep_tracking_resumed
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_snooze_clicked
   id: alarm_snooze_clicked
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_snooze_canceled
   id: alarm_snooze_canceled
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: time_to_bed_alarm_alert
   id: time_to_bed_alarm_alert
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_alert_start
   id: alarm_alert_start
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_alert_dismiss
   id: alarm_alert_dismiss
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: alarm_skip_next
   id: alarm_skip_next
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: show_skip_next_alarm
   id: show_skip_next_alarm
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: rem
   id: rem
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: smart_period
   id: smart_period
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: before_smart_period
   id: before_smart_period
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: lullaby_start
   id: lullaby_start
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: lullaby_stop
   id: lullaby_stop
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: lullaby_volume_down
   id: lullaby_volume_down
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: deep_sleep
   id: deep_sleep
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: light_sleep
   id: light_sleep
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: awake
   id: awake
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: not_awake
   id: not_awake
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: apnea_alarm
   id: apnea_alarm
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: antisnoring
   id: antisnoring
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sound_event_snore
   id: sound_event_snore
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sound_event_talk
   id: sound_event_talk
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sound_event_cough
   id: sound_event_cough
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sound_event_baby
   id: sound_event_baby
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: sound_event_laugh
   id: sound_event_laugh
 - platform: device
-  domain: sleep_as_android
+  domain: sleep_as_android_mqtt
   device_id: !input 'device'
   type: before_alarm
   id: before_alarm
