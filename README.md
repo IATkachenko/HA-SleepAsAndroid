@@ -30,13 +30,14 @@ You will need:
 
 ### Installation
  * go to [HACS](https://hacs.xyz/docs/installation/installation) -> `Integrations`
- * press `+ Explore & Add repositories` button
+ * press `+ Explore & Download Repositories` button
  * type `Sleep As Android` in search field and click at integration name
- * press `Install this repository to HACS` button
- * press `Install` button _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
+ * press `Download` button
+ * in confirmation dialog, verify selected version and click `Download` in right bottom corner _(if you have outdated version of Home Assistant -- [check integration version in Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/Versions-and-Updates) )_
  * restart **Home Assistant** 
- * go to **Home Assistant** `Settings` -> `Integrations` -> `Add Integration` (right bottom conner)
- * type `Sleep As Android` in search field and click at integration name. [Clean browser cache if nothing found](https://github.com/IATkachenko/HA-SleepAsAndroid/issues/29).
+ * use browser refresh or clear browser cache to ensure new integration is populated
+ * go to **Home Assistant** `Settings` -> `Devices & Services` -> `Integrations` -> `Add Integration` (right bottom corner)
+ * type `Sleep As Android` in search field and click at integration name
 
 ### Configuration 
 #### Component configuration
@@ -75,11 +76,11 @@ More details in [Wiki](https://github.com/IATkachenko/HA-SleepAsAndroid/wiki/app
     1. press `import` button
  1. create automatization based on blueprint:
     * `person` and `state` is using to run actions only if **person** in **state** (to avoid run home automatization related to sleep tracking while vacation in Siberia, for example)
-    * add actions for [evens]((https://docs.sleep.urbandroid.org/services/automation.html#events))
+    * add actions for [events]((https://docs.sleep.urbandroid.org/services/automation.html#events))
     
 ### on device event
  1. select `Device` in automatization trigger and use `SleepAsAndroid` device;
- 1. select trigger from a list.
+ 2. select trigger from a list.
 
 ![added_in_version_badge](https://img.shields.io/badge/Since-v1.7.0-red) events will be fired up for every MQTT message  
  
